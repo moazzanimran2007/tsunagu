@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Tsunagu つなぐ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* Layout: one calm app shell; role views swap in the main column. The older-adult view is a narrow, oversized column. */
+:root{
+  --bg:#F4F3EF; --surface:#FFFFFF; --surface-2:#ECEAE4; --line:#D9D6CE;
+  --ink:#22252C; --ink-2:#565A63; --indigo:#2D4878; --indigo-soft:#E3E8F2;
+  --accent:#E3A33B; --accent-ink:#22252C; --accent-soft:#FBEBCD;
+  --ok:#2F7A4F; --ok-soft:#DDF0E3; --warn:#9A5B00; --warn-soft:#FBE7C6; --bad:#A63A3A; --bad-soft:#F6DEDB;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --r:8px; --es:1;
+  --chrome:rgb(255 255 255 / .74); --line-soft:rgb(34 37 44 / .08); --scrim:rgb(10 12 16 / .42);
+  --toast:rgb(34 37 44 / .88); --toast-ink:#F4F3EF;
+  --ease-spring:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15171C; --surface:#1F2229; --surface-2:#282C34; --line:#363B45;
+  --ink:#ECE9E2; --ink-2:#A9ADB6; --indigo:#9DB4E0; --indigo-soft:#253049;
+  --accent:#EDB453; --accent-ink:#1A1B1F; --accent-soft:#3A2F1A;
+  --ok:#7CCB98; --ok-soft:#1D3326; --warn:#E9B35E; --warn-soft:#3A2D16; --bad:#EE9A92; --bad-soft:#3D2120;
+  --chrome:rgb(31 34 41 / .72); --line-soft:rgb(236 233 226 / .08); --scrim:rgb(0 0 0 / .55); --toast:rgb(236 233 226 / .9); --toast-ink:#15171C;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15171C; --surface:#1F2229; --surface-2:#282C34; --line:#363B45;
+  --ink:#ECE9E2; --ink-2:#A9ADB6; --indigo:#9DB4E0; --indigo-soft:#253049;
+  --accent:#EDB453; --accent-ink:#1A1B1F; --accent-soft:#3A2F1A;
+  --ok:#7CCB98; --ok-soft:#1D3326; --warn:#E9B35E; --warn-soft:#3A2D16; --bad:#EE9A92; --bad-soft:#3D2120;
+  --chrome:rgb(31 34 41 / .72); --line-soft:rgb(236 233 226 / .08); --scrim:rgb(0 0 0 / .55); --toast:rgb(236 233 226 / .9); --toast-ink:#15171C;
+  color-scheme:dark}
+*{box-sizing:border-box}
+:root:lang(ja) body{letter-spacing:.02em}
+:root:lang(en) .hero h1,:root:lang(en) .page-h h1,:root:lang(en) .elder h1,:root:lang(en) .wiz h1{letter-spacing:-.015em}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.3;text-wrap:balance;margin:0}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--indigo);outline-offset:2px;border-radius:6px}
+.ic{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--chrome);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%)}
+
+/* header: translucent material; content scrolls beneath, and a soft edge appears only once something is under it */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--chrome);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);border-bottom:1px solid transparent;transition:border-color .25s ease,box-shadow .25s ease}
+body[data-scrolled] .top{border-bottom-color:var(--line-soft);box-shadow:0 10px 24px -18px rgb(0 0 0 / .35)}
+.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:10px}
+.brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink)}
+.brand b{font-family:var(--f-display);font-size:24px;letter-spacing:.04em}
+.brand span{font-size:13px;color:var(--ink-2)}
+.demo-tag{font-size:13px;color:var(--ink-2);border-left:1px solid var(--line);padding-left:10px}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.who{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2)}
+.who strong{color:var(--ink);font-weight:500}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;min-height:40px;cursor:pointer;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--indigo);color:var(--surface)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:500;text-decoration:none;color:var(--ink)}
+/* press feedback lands on pointer-down; release eases back like a settling spring */
+.btn,.tile,.opt,.seg button,.tabs button,.linkish{transition:transform 280ms var(--ease-spring),background-color .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active:not([disabled]),.tile:active,.opt:active,.seg button:active{transform:scale(.97);transition-duration:70ms}
+.btn:hover{border-color:var(--ink-2)}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-accent:hover{filter:brightness(1.04);border-color:var(--accent)}
+.btn-ink{background:var(--indigo);border-color:var(--indigo);color:var(--surface)}
+.btn-ink:hover{border-color:var(--indigo);filter:brightness(1.1)}
+.btn-sm{min-height:40px;padding:6px 12px;font-size:14px;border-radius:6px}
+.btn-quiet{border-color:transparent;background:none;color:var(--ink-2)}
+.btn-quiet:hover{color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn-ai{border-color:var(--indigo);color:var(--indigo)}
+.linkish{background:none;border:0;padding:6px 0;color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px;min-height:40px;text-decoration:underline;text-underline-offset:3px}
+
+/* generic */
+main{padding-block:28px 64px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+.eyebrow{font-size:14px;color:var(--ink-2);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:13px;padding:1px 8px;border-radius:4px;background:var(--surface-2);color:var(--ink);white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.ind{background:var(--indigo-soft);color:var(--indigo)}
+.chip.acc{background:var(--accent-soft);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;min-height:48px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;display:inline-flex;gap:8px;align-items:center}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.count{font-size:12px;min-width:22px;padding:0 6px;border-radius:4px;background:var(--surface-2);color:var(--ink);line-height:22px;text-align:center}
+.page-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.page-h h1{font-size:28px}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-radius:6px;background:var(--warn-soft);color:var(--ink);margin-bottom:16px}
+.banner.info{background:var(--indigo-soft)}
+.empty{padding:28px;text-align:center;color:var(--ink-2);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* landing */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center;padding-block:12px 36px}
+.hero h1{font-size:clamp(28px,4.2vw,44px);letter-spacing:.01em}
+.hero p.lead{font-size:18px;color:var(--ink-2);margin-top:14px;max-width:34em}
+.hero .row{margin-top:24px}
+.hero .btn{min-height:56px;font-size:17px}
+.kicker{font-size:14px;color:var(--ink-2)}
+.hero h1 br{display:block}
+/* the right column is a printed notice board: double rule on top, dotted lines between entries */
+.board{background:var(--surface);border:1px solid var(--line);border-top:4px double var(--ink);padding:14px 18px 10px}
+.board h2{font-size:17px;padding-bottom:8px;border-bottom:1px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.board h2 small{font-family:var(--f-body);font-weight:400;font-size:12px;color:var(--ink-2)}
+.board ol{list-style:none;margin:0;padding:0}
+.board li{display:grid;grid-template-columns:minmax(3.2em,auto) minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px dotted var(--line);align-items:baseline}
+.board li:last-child{border-bottom:0}
+.board time{white-space:nowrap;font-family:var(--f-display);font-weight:700;font-size:19px;font-variant-numeric:tabular-nums;line-height:1.15}
+.board time small{display:block;font-size:12px;color:var(--ink-2);font-weight:500;font-family:var(--f-body)}
+.board li b{display:block;font-weight:500;line-height:1.45}
+.board li span{font-size:13px;color:var(--ink-2)}
+.accts{border-top:1px solid var(--line);margin-top:14px}
+.acct{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.acct b{display:block}
+.acct > div:first-child span{font-size:14px;color:var(--ink-2)}
+.acct .counts{font-size:14px;color:var(--ink-2)}
+.acct .counts strong{color:var(--ink);font-variant-numeric:tabular-nums}
+@media (max-width:720px){.acct{grid-template-columns:minmax(0,1fr) auto}.acct > div:first-child{grid-column:1/-1}}
+.flow{display:grid;gap:10px}
+.flow-step{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.flow-step .n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--indigo-soft);color:var(--indigo);font-weight:700}
+.flow-step:nth-child(3) .n{background:var(--accent-soft);color:var(--ink)}
+.flow-step b{display:block;font-weight:500}
+.flow-step small{color:var(--ink-2);font-size:13px}
+.sec-h{font-size:22px;margin-bottom:6px}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:16px}
+.role{display:flex;flex-direction:column;gap:10px}
+.role h3{font-size:18px;display:flex;align-items:center;gap:8px}
+.role p{font-size:14px;color:var(--ink-2);flex:1}
+select.inp,input.inp,textarea.inp{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+textarea.inp{min-height:96px;resize:vertical}
+.demo-path{display:grid;margin:16px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.dp{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.dp .num{font-family:var(--f-display);font-size:22px;color:var(--indigo);width:28px;text-align:center}
+.dp p{font-size:15px}
+.dp small{display:block;color:var(--ink-2);font-size:13px}
+
+/* elder view */
+.elder{max-width:720px;margin:0 auto;font-size:calc(20px * var(--es))}
+.elder h1{font-size:calc(30px * var(--es))}
+.elder h2{font-size:calc(24px * var(--es));margin:36px 0 14px}
+.e-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.tsize{display:flex;align-items:center;gap:8px;font-size:16px}
+.tsize .seg button{min-height:48px;min-width:52px;font-weight:700}
+.ecard{background:var(--surface);border:2px solid var(--line);border-radius:.45em;padding:1.1em;display:flex;flex-direction:column;gap:.7em;transition:opacity 220ms ease,transform 260ms cubic-bezier(.4,0,1,1)}
+.ecard + .ecard{margin-top:.9em}
+/* a chosen card drops toward "My upcoming events", where the new row lights up */
+.ecard.leaving{opacity:0;transform:translateY(16px) scale(.98);pointer-events:none}
+.up.fresh{animation:fresh 1.8s ease-out}
+@keyframes fresh{from{background:var(--accent-soft);border-color:var(--accent)}}
+.waiting.fresh{animation:appear 320ms var(--ease-spring)}
+@keyframes appear{from{opacity:0;transform:scale(.96)}}
+.ecat{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:.8em;color:var(--ink-2)}
+.ecard h3{font-size:1.35em}
+.edl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;margin:0;align-items:start}
+.edl div{display:contents}
+.edl dt{display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+.edl dd{margin:0;font-weight:500;min-width:0}
+.why{border-top:1px dashed var(--line);padding-top:.6em;font-size:.92em}
+.why strong{font-weight:700;margin-right:.3em}
+.ebtns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ebtns .btn{min-height:3.2em;font-size:1em;border-width:2px;border-radius:.35em}
+.ebtns .btn-quiet{border-color:var(--line);color:var(--ink)}
+.waiting{display:flex;align-items:center;justify-content:center;gap:10px;min-height:3.2em;border-radius:.35em;background:var(--indigo-soft);color:var(--indigo);font-weight:500;padding:8px 12px;text-align:center}
+.up{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:16px 18px;background:var(--surface);border:2px solid var(--line);border-radius:8px}
+.up + .up{margin-top:12px}
+.up .d{font-family:var(--f-display);font-weight:700;text-align:center;line-height:1.2;min-width:4.2em}
+.up .d small{display:block;font-weight:500;font-size:.7em;color:var(--ink-2)}
+.ai-mark{display:inline-block;font-size:max(12px,.65em);font-weight:700;letter-spacing:.04em;padding:0 5px;border:1px solid var(--indigo);color:var(--indigo);border-radius:3px;line-height:1.5;vertical-align:.1em}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:110px;padding:16px 10px 12px;justify-content:flex-start;border-radius:8px;border:2px solid var(--line);background:var(--surface);cursor:pointer;text-align:center;font-weight:500;line-height:1.35}
+/* interests are marked with one kanji in a stamp-like square, the way community-center timetables label activities */
+.tile .em{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1;width:46px;height:46px;display:grid;place-items:center;border:2px solid var(--indigo);color:var(--indigo);border-radius:4px}
+.tile[aria-pressed="true"] .em{background:var(--indigo);color:var(--surface)}
+.mark{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border:1.5px solid var(--indigo);color:var(--indigo);border-radius:3px;font-family:var(--f-display);font-weight:700;line-height:1;margin-right:.45em;vertical-align:-.25em}
+.tile[aria-pressed="true"]{border-color:var(--indigo);background:var(--indigo-soft);box-shadow:inset 0 0 0 1px var(--indigo)}
+.tile[aria-pressed="true"]::after{content:"✓";font-weight:700;color:var(--indigo)}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;min-height:60px;padding:12px 16px;border-radius:8px;border:2px solid var(--line);background:var(--surface);cursor:pointer;text-align:left;font-size:18px;font-weight:500}
+.opt[aria-pressed="true"]{border-color:var(--indigo);background:var(--indigo-soft)}
+.opt .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink-2);flex:none}
+.opt[aria-pressed="true"] .dot{border:7px solid var(--indigo)}
+.mini-tiles .tile{min-height:72px;flex-direction:row;font-size:15px}
+.mini-tiles .tile .em{font-size:16px;width:30px;height:30px;border-width:1.5px}
+
+/* wizard */
+.wiz{max-width:680px;margin:0 auto}
+.wiz h1{font-size:30px;margin:8px 0 6px}
+.wiz .q{font-size:19px;color:var(--ink-2);margin-bottom:22px}
+.prog{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.prog i.grow{animation:grow 420ms var(--ease-spring)}
+@keyframes grow{from{width:var(--from)}}
+/* steps move along one axis: Next arrives from the right, Back from the left */
+.wiz-step.from-next{animation:in-next 340ms var(--ease-spring)}
+.wiz-step.from-back{animation:in-back 340ms var(--ease-spring)}
+@keyframes in-next{from{opacity:0;transform:translateX(28px)}}
+@keyframes in-back{from{opacity:0;transform:translateX(-28px)}}
+.wiz-nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px}
+.wiz-nav .btn{min-height:60px;min-width:9em;font-size:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.flabel{font-weight:500}
+.field .hint{font-size:13px;color:var(--ink-2)}
+.wiz .inp{min-height:58px;font-size:19px}
+.err{color:var(--bad);font-weight:500;margin-top:10px}
+.consent{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;font-size:17px}
+.consent ul{margin:8px 0 0;padding-left:1.2em}
+.check{display:flex;gap:12px;align-items:center;margin-top:18px;font-size:18px;font-weight:500;cursor:pointer}
+.check input{width:28px;height:28px;accent-color:var(--indigo)}
+
+/* forms (organizer) */
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.fgrid .full{grid-column:1/-1}
+.toggle{display:flex;align-items:center;gap:10px;min-height:48px;cursor:pointer}
+.toggle input{width:22px;height:22px;accent-color:var(--indigo)}
+
+/* list rows */
+.lrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.lrow + .lrow{margin-top:10px}
+.lrow h3{font-size:17px}
+.lrow .meta{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);margin-top:4px}
+.lrow .meta span{display:inline-flex;gap:6px;align-items:center}
+.lrow .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.stat{font-variant-numeric:tabular-nums;font-weight:700}
+details.att{margin-top:10px;font-size:14px}
+details.att summary{cursor:pointer;color:var(--indigo);min-height:32px}
+details.att ul{margin:6px 0 0;padding-left:1.2em}
+
+/* family */
+.fam-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px}
+.pf dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:12px 0 0;font-size:15px}
+.pf dt{color:var(--ink-2)}
+.pf dd{margin:0}
+.rec{padding:14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.rec:first-of-type{border-top:0}
+.rec b{font-weight:500}
+.rec .muted{font-size:14px}
+
+/* modal + toast */
+/* a modal task dims the page; it enters and leaves along the same path */
+.scrim{position:fixed;inset:0;display:grid;place-items:center;z-index:20;padding:16px}
+.scrim::before{content:"";position:absolute;inset:0;background:var(--scrim);opacity:0;transition:opacity 260ms ease}
+.scrim.open::before{opacity:var(--dim,1)}
+.modal{position:relative;background:var(--surface);border-radius:12px;max-width:620px;width:100%;max-height:calc(100% - 32px);overflow:auto;padding:24px;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.25);
+  opacity:0;transform:translateY(10px) scale(.97);transition:opacity 200ms ease,transform 360ms var(--ease-spring)}
+.scrim.open .modal{opacity:1;transform:none}
+.scrim.closing .modal{transition-duration:170ms,220ms}
+.grab{display:none}
+.modal h2{font-size:22px}
+.script{font-size:19px;line-height:1.9;background:var(--bg);border-radius:6px;padding:16px 18px;margin-top:14px;white-space:pre-wrap}
+.script.en{font-size:15px;line-height:1.6;color:var(--ink-2);background:none;padding:4px 2px}
+.outs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--toast);color:var(--toast-ink);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);padding:12px 18px;border-radius:8px;z-index:30;display:flex;gap:10px;align-items:center;max-width:calc(100% - 32px);font-weight:500;letter-spacing:.01em;box-shadow:0 12px 30px -12px rgb(0 0 0 / .35);animation:toast-in 340ms var(--ease-spring)}
+.toast.out{animation:toast-out 200ms ease forwards}
+@keyframes toast-in{from{opacity:0;transform:translate(-50%,14px)}}
+@keyframes toast-out{to{opacity:0;transform:translate(-50%,14px)}}
+.speaking{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+
+/* phones: the dialog becomes a bottom sheet you can drag down to dismiss */
+@media (max-width:560px){
+  .scrim{place-items:end stretch;padding:0}
+  .modal{border-radius:14px 14px 0 0;max-height:92%;border-bottom:0;opacity:1;transition:none;padding:18px max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+  .grab{display:flex;justify-content:center;align-items:center;height:30px;margin:-14px -20px 4px;touch-action:none;cursor:grab}
+  .grab span{width:40px;height:5px;border-radius:99px;background:var(--line)}
+  .modal.dragging .grab{cursor:grabbing}
+}
+
+/* reduced motion: gentle cross-fades instead of travel or scale */
+@keyframes fade{from{opacity:0}}
+@keyframes fade-out{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .speaking{animation:none}
+  .btn:active,.tile:active,.opt:active,.seg button:active{transform:none!important}
+  .wiz-step.from-next,.wiz-step.from-back,.waiting.fresh{animation:fade 200ms ease}
+  .prog i.grow{animation:none}
+  .ecard.leaving{transform:none}
+  .toast{animation:fade 200ms ease}.toast.out{animation:fade-out 160ms ease forwards}
+  .modal{transform:none!important;transition:opacity 160ms ease!important}
+  .scrim:not(.open) .modal{opacity:0}
+}
+@media (prefers-reduced-transparency:reduce){
+  .top,body::before{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .toast{background:var(--ink);color:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media (prefers-contrast:more){
+  .top{border-bottom-color:var(--ink-2)}
+  .btn,.tile,.opt,.ecard,.card,.lrow{border-color:var(--ink-2)}
+}
+footer{border-top:1px solid var(--line);padding-block:20px;color:var(--ink-2);font-size:13px}
+footer .wrap{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr}
+  .fam-grid{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .ebtns{grid-template-columns:1fr}
+  .lrow{grid-template-columns:1fr}
+  .lrow .acts{justify-content:flex-start}
+  .outs{grid-template-columns:1fr}
+  .up{grid-template-columns:auto 1fr}
+  .up > :last-child{grid-column:1/-1}
+  .edl{grid-template-columns:1fr;row-gap:0}
+  .edl dd{margin-bottom:8px}
+  .who{display:none}
+  .brand span,.demo-tag{display:none}
+  .page-h h1{font-size:24px}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="i-yen" viewBox="0 0 24 24"><path d="M6 4l6 8 6-8M12 12v8M7.5 13h9M7.5 16.5h9"/></symbol>
+<symbol id="i-walk" viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="1.8"/><path d="M10 21l2-6-2.5-3 1-5 3 2.5 3 1M12 15l3 6M9.5 12L7 14"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.8-3.3 3-5 5.5-5s4.7 1.7 5.5 5M15 14.3c2.6-.4 4.8 1.2 5.5 4.2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13M9 21v-5h6v5M8 11h2M14 11h2"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 18L8.5 6 13 18M5.6 14h5.8M15 18l3-7.5 3 7.5M15.9 16h4.2"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
+</defs></svg>
+
+<div id="app"></div>
+<div id="layer"></div>
+
+<script>
+"use strict";
+/* ============ basics ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ico = n => `<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const uid = p => p + Math.random().toString(36).slice(2, 8);
+const KEY = "tsunagu-demo-v1";
+let S;            // persisted demo state
+const UI = { orgTab:"events", adminTab:"calls", reg:null, ef:null, editing:null, modal:null, resetArm:false, busy:{} };
+let AI = null;    // Claude sample function when available
+const J = (ja, en) => S.lang === "ja" ? ja : en;
+const loc = o => (o && typeof o === "object") ? (o[S.lang] ?? o.ja) : (o ?? "");
+
+/* ============ reference data ============ */
+const INTERESTS = {
+  exercise:{em:"体",ja:"体操・運動",en:"exercise"},
+  crafts:{em:"編",ja:"手芸・編み物",en:"crafts & knitting"},
+  games:{em:"碁",ja:"囲碁・将棋・ゲーム",en:"go, shogi & games"},
+  gardening:{em:"畑",ja:"園芸・畑",en:"gardening"},
+  cooking:{em:"食",ja:"料理",en:"cooking"},
+  music:{em:"歌",ja:"音楽・歌",en:"music & singing"},
+  walking:{em:"歩",ja:"散歩",en:"walking"},
+  history:{em:"史",ja:"歴史・文化",en:"history & culture"},
+  teaching:{em:"教",ja:"教える・伝える",en:"teaching & sharing skills"},
+  volunteering:{em:"助",ja:"ボランティア",en:"volunteering"},
+  young:{em:"若",ja:"若い世代との交流",en:"time with young people"},
+  penpal:{em:"文",ja:"文通",en:"pen pals"}
+};
+const WARDS = { kamigyo:{ja:"上京区",en:"Kamigyō"}, kita:{ja:"北区",en:"Kita"}, sakyo:{ja:"左京区",en:"Sakyō"}, nakagyo:{ja:"中京区",en:"Nakagyō"} };
+const AREAS = {
+  nishijin:{ja:"西陣",en:"Nishijin",ward:"kamigyo",lat:35.0305,lng:135.7450},
+  imadegawa:{ja:"今出川",en:"Imadegawa",ward:"kamigyo",lat:35.0300,lng:135.7570},
+  kitano:{ja:"北野",en:"Kitano",ward:"kamigyo",lat:35.0290,lng:135.7350},
+  murasakino:{ja:"紫野",en:"Murasakino",ward:"kita",lat:35.0440,lng:135.7440},
+  demachi:{ja:"出町柳",en:"Demachiyanagi",ward:"sakyo",lat:35.0300,lng:135.7720},
+  ichijoji:{ja:"一乗寺",en:"Ichijōji",ward:"sakyo",lat:35.0470,lng:135.7900},
+  nijo:{ja:"二条城周辺",en:"Nijō",ward:"nakagyo",lat:35.0140,lng:135.7480},
+  karasuma:{ja:"烏丸御池",en:"Karasuma Oike",ward:"nakagyo",lat:35.0105,lng:135.7595}
+};
+const ACCESS = { stepfree:{ja:"段差なし",en:"Step-free"}, seating:{ja:"椅子席あり",en:"Seating"}, hearing:{ja:"聞こえのサポート",en:"Hearing support"} };
+const SLOTS = { am:{ja:"午前",en:"morning"}, pm:{ja:"午後",en:"afternoon"}, eve:{ja:"夕方以降",en:"evening"} };
+const DOW_JA = "日月火水木金土";
+const DOW_EN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const HELPLINE = "075-000-0000";
+
+/* ============ dates ============ */
+function today0(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); }
+function addDays(n){ const d = today0(); d.setDate(d.getDate()+n); return ymd(d); }
+function nthDow(y,m,n,dow){ const f = new Date(y,m,1); const off = (dow - f.getDay() + 7) % 7; return new Date(y,m,1+off+(n-1)*7); }
+function nextDate(ev){
+  const t = today0(), w = ev.when;
+  if (w.kind === "once") { const d = parseYmd(w.date); return d >= t ? d : null; }
+  if (w.kind === "weekly") { const d = new Date(t); d.setDate(d.getDate() + ((w.dow - d.getDay() + 7) % 7)); return d; }
+  if (w.kind === "monthly") { let d = nthDow(t.getFullYear(), t.getMonth(), w.nth, w.dow); if (d < t) d = nthDow(t.getFullYear(), t.getMonth()+1, w.nth, w.dow); return d; }
+  return null;
+}
+function fmtDate(d){ if (!d) return ""; return S.lang === "ja" ? `${d.getMonth()+1}月${d.getDate()}日（${DOW_JA[d.getDay()]}）` : d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}); }
+function timeRange(w){ return w.start ? `${w.start}${S.lang==="ja"?"〜":"–"}${w.end||""}` : ""; }
+function ord(n){ return n + (["th","st","nd","rd"][n] || "th"); }
+function schedLabel(ev){
+  const w = ev.when;
+  if (w.kind === "flex") return J("いつでも（郵送でのやりとり）","Anytime (letters by post)");
+  if (w.kind === "weekly") return J(`毎週${DOW_JA[w.dow]}曜 ${timeRange(w)}`, `Every ${DOW_EN[w.dow]}, ${timeRange(w)}`);
+  if (w.kind === "monthly") return J(`毎月第${w.nth}${DOW_JA[w.dow]}曜 ${timeRange(w)}`, `${ord(w.nth)} ${DOW_EN[w.dow]} of each month, ${timeRange(w)}`);
+  return `${fmtDate(parseYmd(w.date))} ${timeRange(w)}`;
+}
+function whenLabel(ev){ const d = nextDate(ev); if (ev.when.kind === "flex") return schedLabel(ev); return `${fmtDate(d)} ${timeRange(ev.when)}`; }
+function slotOf(start){ const h = parseInt(start,10); return h < 12 ? "am" : h < 17 ? "pm" : "eve"; }
+function costLabel(c){ return c ? J(`${c.toLocaleString()}円`, `¥${c.toLocaleString()}`) : J("無料","Free"); }
+
+/* ============ distance ============ */
+function km(a,b){
+  if (a === "home" || b === "home") return 0;
+  const A = AREAS[a], B = AREAS[b]; if (!A || !B) return 0;
+  const R = 6371, r = x => x*Math.PI/180;
+  const dLat = r(B.lat-A.lat), dLng = r(B.lng-A.lng);
+  const h = Math.sin(dLat/2)**2 + Math.cos(r(A.lat))*Math.cos(r(B.lat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+const walkMin = k => Math.max(3, Math.round(k*1.3*1000/65));
+const busMin = k => Math.round(10 + k*4);
+function areaLabel(a){ if (a === "home") return J("ご自宅から","From home"); const A = AREAS[a]; return A ? `${loc(WARDS[A.ward])} ${loc(A)}` : ""; }
+function routeLabel(el, ev){
+  if (ev.area === "home") return J("ご自宅から参加できます","Join from home");
+  const k = km(el.area, ev.area);
+  return k <= 1.0 ? J(`歩いて約${walkMin(k)}分`, `About ${walkMin(k)} min on foot`) : J(`バスで約${busMin(k)}分`, `About ${busMin(k)} min by bus`);
+}
+
+/* ============ seed ============ */
+function seed(){
+  const now = Date.now();
+  const elders = [
+    {id:"el1",name:{ja:"山本 ハナ",en:"Hana Yamamoto"},phone:"075-201-3381",contact:"both",days:["wkday"],times:["am","pm"],area:"nishijin",interests:["crafts","music","young"],travel:"walk",access:[],help:"maybe",managedBy:null,registeredBy:"self"},
+    {id:"el2",name:{ja:"佐藤 キヨ",en:"Kiyo Sato"},phone:"075-462-1907",contact:"phone",days:["wkday","wkend"],times:["am","pm"],area:"kitano",interests:["cooking","gardening","music"],travel:"bus",access:["seating"],help:"no",managedBy:"h1",registeredBy:"family"},
+    {id:"el3",name:{ja:"佐藤 正夫",en:"Masao Sato"},phone:"075-462-1907",contact:"phone",days:["wkday","wkend"],times:["pm"],area:"kitano",interests:["games","history","teaching"],travel:"bus",access:[],help:"yes",managedBy:"h1",registeredBy:"family"},
+    {id:"el4",name:{ja:"池田 敏夫",en:"Toshio Ikeda"},phone:"075-414-5520",contact:"phone",days:["wkday"],times:["am"],area:"imadegawa",interests:["walking","games","history"],travel:"walk",access:[],help:"maybe",managedBy:"h2",registeredBy:"supporter"},
+    {id:"el5",name:{ja:"小林 ふみ",en:"Fumi Kobayashi"},phone:"075-491-0248",contact:"app",days:["wkday","wkend"],times:["am"],area:"murasakino",interests:["exercise","music","penpal"],travel:"bus",access:[],help:"no",managedBy:null,registeredBy:"self"},
+    {id:"el6",name:{ja:"田中 一郎",en:"Ichiro Tanaka"},phone:"075-811-6630",contact:"both",days:["wkday","wkend"],times:["pm"],area:"nijo",interests:["teaching","crafts","volunteering","young"],travel:"any",access:[],help:"yes",managedBy:null,registeredBy:"self"},
+    {id:"el7",name:{ja:"吉田 静子",en:"Shizuko Yoshida"},phone:"075-781-4412",contact:"phone",days:["wkday"],times:["am","pm"],area:"demachi",interests:["history","walking","gardening"],travel:"walk",access:["stepfree"],help:"maybe",managedBy:"h3",registeredBy:"family"},
+    {id:"el8",name:{ja:"松本 実",en:"Minoru Matsumoto"},phone:"075-221-9054",contact:"app",days:["wkend"],times:["pm","eve"],area:"karasuma",interests:["games","cooking","exercise"],travel:"bus",access:[],help:"no",managedBy:null,registeredBy:"self"}
+  ].map(e => ({...e, declined:{}, stopCalls:false, consentAt:now - 20*864e5}));
+  const helpers = [
+    {id:"h1",name:{ja:"佐藤 健一",en:"Kenichi Sato"},kind:"family",relation:{ja:"息子",en:"son"},wantsCopy:true},
+    {id:"h2",name:{ja:"中村 美和",en:"Miwa Nakamura"},kind:"supporter",relation:{ja:"民生委員",en:"welfare volunteer (minsei-iin)"},wantsCopy:true},
+    {id:"h3",name:{ja:"吉田 彩",en:"Aya Yoshida"},kind:"family",relation:{ja:"孫",en:"granddaughter"},wantsCopy:false}
+  ];
+  const orgs = [
+    {id:"o1",name:{ja:"京都市 地域福祉課",en:"Kyoto City Community Welfare Office"},type:"official",status:"verified",contact:"075-000-1111",bio:{ja:"市内の高齢者向け地域行事を案内しています。",en:"Runs community programs for older residents across the city."}},
+    {id:"o2",name:{ja:"西陣 長寿すこやかセンター",en:"Nishijin Longevity Center"},type:"official",status:"verified",contact:"075-000-2222",bio:{ja:"体操・手芸・歌声サロンなど、毎週の集いを開いています。",en:"Weekly exercise, crafts and sing-along gatherings."}},
+    {id:"o3",name:{ja:"鴨川学生ボランティア会",en:"Kamogawa Student Volunteers"},type:"individual",status:"approved",contact:"kamogawa.vol@example.jp",bio:{ja:"京都の大学生による多世代交流のボランティア団体です。",en:"University students in Kyoto running cross-generational volunteer programs."}},
+    {id:"o4",name:{ja:"藤田 清（西陣織 元職人）",en:"Kiyoshi Fujita (retired Nishijin weaver)"},type:"individual",status:"pending",contact:"075-000-4444",bio:{ja:"西陣織の職人を40年。手織りの楽しさを伝えたいです。",en:"Wove Nishijin-ori for 40 years and wants to share hand-weaving."}}
+  ];
+  const E = (o) => ({tags:[],access:[],cost:0,capacity:20,helping:false,crossGen:false,firstTimer:false,status:"published",flags:[],createdAt:now - 30*864e5, ...o});
+  const events = [
+    E({id:"e1",orgId:"o2",cat:"exercise",tags:["exercise"],title:{ja:"朝のいきいき体操",en:"Morning group exercise (taisō)"},desc:{ja:"椅子に座ってもできる、ゆったりした体操です。",en:"Gentle exercises you can also do seated."},when:{kind:"weekly",dow:2,start:"9:30",end:"10:30"},place:{ja:"西陣ふれあいサロン",en:"Nishijin Community Salon"},area:"nishijin",access:["stepfree","seating"],firstTimer:true,capacity:30}),
+    E({id:"e2",orgId:"o2",cat:"crafts",tags:["crafts"],title:{ja:"編み物サークル",en:"Knitting circle"},desc:{ja:"お茶を飲みながら、のんびり編み物。毛糸は用意があります。",en:"Relaxed knitting over tea. Yarn provided."},when:{kind:"weekly",dow:3,start:"13:30",end:"15:30"},place:{ja:"西陣ふれあいサロン 2階和室",en:"Nishijin Community Salon, 2F tatami room"},area:"nishijin",access:["seating"],cost:200,firstTimer:true,capacity:12}),
+    E({id:"e3",orgId:"o1",cat:"games",tags:["games"],title:{ja:"囲碁・将棋の午後",en:"Go & shogi afternoon"},desc:{ja:"初心者から有段者まで。対局相手をご紹介します。",en:"Beginners to experienced players. We pair you with a partner."},when:{kind:"weekly",dow:5,start:"13:00",end:"16:00"},place:{ja:"上京区 地域交流センター",en:"Kamigyō Community Center"},area:"imadegawa",access:["stepfree","seating"],firstTimer:true,capacity:24}),
+    E({id:"e4",orgId:"o1",cat:"young",tags:["young","teaching","games"],title:{ja:"小学校ふれあいルーム「昔あそびの会」",en:"Old-time games with schoolchildren"},desc:{ja:"小学生にお手玉・けん玉・こまを教えてください。",en:"Teach primary-school kids otedama, kendama and spinning tops."},when:{kind:"monthly",nth:2,dow:6,start:"10:00",end:"11:30"},place:{ja:"北野小学校 地域ふれあいルーム",en:"Kitano Elementary, community room"},area:"kitano",access:["seating"],helping:true,crossGen:true,firstTimer:true}),
+    E({id:"e5",orgId:"o3",cat:"teaching",tags:["teaching","crafts","young"],title:{ja:"学生に伝統工芸を教えよう",en:"Teach students a traditional craft"},desc:{ja:"組紐や刺し子など、得意な手仕事を大学生に教える会です。",en:"Share a craft you know (braiding, sashiko…) with university students."},when:{kind:"once",date:addDays(12),start:"14:00",end:"16:00"},place:{ja:"西陣 町家スペース",en:"Nishijin machiya space"},area:"nishijin",access:["seating"],helping:true,crossGen:true,capacity:10}),
+    E({id:"e6",orgId:"o3",cat:"penpal",tags:["penpal","young"],title:{ja:"大学生との文通プログラム",en:"Pen pals with university students"},desc:{ja:"月に1通、学生と手紙をやりとりします。切手・便箋はこちらで用意します。",en:"Exchange one letter a month with a student. Stamps and paper provided."},when:{kind:"flex"},place:{ja:"郵送（ご自宅から）",en:"By post, from home"},area:"home",crossGen:true,firstTimer:true,capacity:40}),
+    E({id:"e7",orgId:"o1",cat:"walking",tags:["walking"],title:{ja:"ご近所ウォーキング会",en:"Neighborhood walking group"},desc:{ja:"北野天満宮から約40分、ゆっくり歩きます。",en:"A slow 40-minute walk starting at Kitano Tenmangū."},when:{kind:"weekly",dow:1,start:"8:30",end:"9:30"},place:{ja:"北野天満宮 東門前",en:"Kitano Tenmangū, east gate"},area:"kitano",firstTimer:true,capacity:25}),
+    E({id:"e8",orgId:"o1",cat:"volunteering",tags:["volunteering","young","cooking"],title:{ja:"年末もちつき大会 ボランティア",en:"Year-end mochi-pounding festival: volunteers"},desc:{ja:"子どもたちと一緒に、もち丸めや受付をお手伝いください。",en:"Help shape mochi and staff the welcome desk alongside local children."},when:{kind:"once",date:addDays(34),start:"9:00",end:"12:00"},place:{ja:"上京区 地域交流センター 中庭",en:"Kamigyō Community Center courtyard"},area:"imadegawa",access:["stepfree"],helping:true,crossGen:true,capacity:15}),
+    E({id:"e9",orgId:"o2",cat:"music",tags:["music"],title:{ja:"歌声サロン",en:"Sing-along salon"},desc:{ja:"童謡や昭和歌謡を、ピアノに合わせてみんなで歌います。",en:"Sing children's songs and Shōwa-era classics together, with piano."},when:{kind:"monthly",nth:1,dow:4,start:"14:00",end:"15:30"},place:{ja:"西陣ふれあいサロン",en:"Nishijin Community Salon"},area:"nishijin",access:["stepfree","seating","hearing"],cost:300,firstTimer:true,capacity:30}),
+    E({id:"e10",orgId:"o1",cat:"history",tags:["history","walking"],title:{ja:"西陣の歴史さんぽ",en:"Nishijin history walk"},desc:{ja:"織屋建ての町家や路地を、ガイドと一緒にめぐります。",en:"Tour weaving townhouses and back lanes with a local guide."},when:{kind:"monthly",nth:3,dow:6,start:"10:00",end:"12:00"},place:{ja:"今出川大宮 集合",en:"Meet at Imadegawa-Ōmiya"},area:"imadegawa",cost:500,firstTimer:true,capacity:15}),
+    E({id:"e11",orgId:"o2",cat:"cooking",tags:["cooking"],title:{ja:"はじめての料理教室",en:"Beginners' cooking class"},desc:{ja:"季節のおばんざいを一緒に作って、一緒に食べます。",en:"Cook seasonal obanzai dishes together, then share the meal."},when:{kind:"monthly",nth:4,dow:5,start:"10:30",end:"13:00"},place:{ja:"紫野 地域センター 調理室",en:"Murasakino Community Center kitchen"},area:"murasakino",access:["stepfree"],cost:800,firstTimer:true,capacity:12}),
+    E({id:"e12",orgId:"o3",cat:"gardening",tags:["gardening","young"],title:{ja:"みんなの畑の朝",en:"Community garden mornings"},desc:{ja:"学生と一緒に野菜を育てます。収穫した野菜はお持ち帰りできます。",en:"Grow vegetables with students and take some of the harvest home."},when:{kind:"weekly",dow:6,start:"9:00",end:"10:30"},place:{ja:"出町 コミュニティ菜園",en:"Demachi community garden"},area:"demachi",crossGen:true,firstTimer:true,capacity:20}),
+    E({id:"e13",orgId:"o3",cat:"young",tags:["young"],title:{ja:"スマホ相談会（学生が教えます）",en:"Smartphone help, taught by students"},desc:{ja:"LINEや写真の送り方など、なんでも聞いてください。",en:"Ask anything, from sending photos to using LINE."},when:{kind:"weekly",dow:3,start:"15:00",end:"16:30"},place:{ja:"二条 地域図書館 会議室",en:"Nijō Library meeting room"},area:"nijo",access:["stepfree","seating"],crossGen:true,firstTimer:true,status:"pending",createdAt:now-1*864e5,capacity:10}),
+    E({id:"e14",orgId:"o4",cat:"crafts",tags:["crafts","history","teaching"],title:{ja:"西陣織 手織り体験",en:"Nishijin hand-weaving session"},desc:{ja:"小さな卓上の織り機で、コースターを織ります。",en:"Weave a coaster on a small tabletop loom."},when:{kind:"once",date:addDays(16),start:"13:30",end:"15:30"},place:{ja:"藤田 織工房",en:"Fujita weaving workshop"},area:"nishijin",access:["seating"],cost:500,firstTimer:true,status:"pending",createdAt:now-2*864e5,capacity:6}),
+    E({id:"e15",orgId:"o3",cat:"volunteering",tags:["volunteering","young","teaching"],title:{ja:"図書館で子どもに読み聞かせ",en:"Reading to children at the library"},desc:{ja:"絵本を1冊、子どもたちに読んでください。本は選んであります。",en:"Read one picture book aloud to children. Books are chosen for you."},when:{kind:"weekly",dow:4,start:"15:30",end:"16:15"},place:{ja:"上京 こども図書室",en:"Kamigyō children's library"},area:"imadegawa",access:["stepfree","seating"],helping:true,crossGen:true,firstTimer:true,capacity:8})
+  ];
+  return {
+    v:1, lang:"ja", scale:1, actor:{elder:"el1", helper:"h1", org:"o2"}, role:null,
+    elders, helpers, orgs, events,
+    rsvps:[
+      {id:"r1",elderId:"el3",eventId:"e3",via:"phone",at:now-3*864e5},
+      {id:"r2",elderId:"el6",eventId:"e5",via:"app",at:now-2*864e5},
+      {id:"r3",elderId:"el5",eventId:"e1",via:"app",at:now-5*864e5},
+      {id:"r4",elderId:"el4",eventId:"e7",via:"phone",at:now-4*864e5}
+    ],
+    callReqs:[{id:"c1",elderId:"el2",eventId:"e9",by:"relative",status:"open",at:now-864e5}],
+    callLogs:[{id:"l1",elderId:"el4",eventId:"e7",outcome:"interested",at:now-4*864e5,ai:false}],
+    reports:[{id:"p1",eventId:"e10",reason:"unclear",note:{ja:"集合場所がわかりにくいです",en:"The meeting point is hard to find"},status:"open",at:now-864e5}],
+    ai:{}, scripts:{}
+  };
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+function loadState(){ try { const r = localStorage.getItem(KEY); if (r) { const o = JSON.parse(r); if (o && o.v === 1) return o; } } catch(e){} return null; }
+S = loadState() || seed();
+
+/* ============ lookups ============ */
+const elder = id => S.elders.find(e => e.id === id);
+const helper = id => S.helpers.find(h => h.id === id);
+const org = id => S.orgs.find(o => o.id === id);
+const event = id => S.events.find(e => e.id === id);
+const hasRsvp = (el, ev) => S.rsvps.some(r => r.elderId === el && r.eventId === ev);
+const openReq = (el, ev) => S.callReqs.find(c => c.elderId === el && c.eventId === ev && c.status !== "done");
+const surname = el => el.name.ja.split(" ")[0];
+const nameOf = el => loc(el.name);
+const san = el => S.lang === "ja" ? `${el.name.ja}さん` : el.name.en;
+
+/* ============ recommendation engine ============ */
+function scoreEvent(el, ev){
+  if (ev.status !== "published") return null;
+  const d = nextDate(ev);
+  if (ev.when.kind !== "flex" && !d) return null;
+  if (hasRsvp(el.id, ev.id)) return null;
+  let s = 0; const why = [];
+  const tags = new Set([ev.cat, ...ev.tags]);
+  const hits = el.interests.filter(i => tags.has(i));
+  if (hits.length){ s += 3*hits.length; why.push({k:"int", v:hits[0], w:3*hits.length}); }
+  if (ev.area === "home"){ s += 1; why.push({k:"home", w:1}); }
+  else {
+    const k = km(el.area, ev.area), lim = {walk:1.2, bus:5, any:99}[el.travel];
+    if (k > lim) return null;
+    if (k <= 1.0){ s += 2; why.push({k:"walk", v:walkMin(k), w:2}); } else { s += 1; why.push({k:"bus", v:busMin(k), w:.9}); }
+  }
+  if (ev.when.kind !== "flex"){
+    const slot = slotOf(ev.when.start), dow = d.getDay();
+    const fit = el.times.includes(slot) && el.days.includes(dow === 0 || dow === 6 ? "wkend" : "wkday");
+    if (fit){ s += 2; why.push({k:"time", v:slot, w:1.4}); } else s -= 2;
+  }
+  for (const a of el.access) s += ev.access.includes(a) ? 1 : -2;
+  if (ev.helping && el.help !== "no"){ const b = el.help === "yes" ? 2 : 1; s += b; why.push({k:"help", w:b+.6}); }
+  if (ev.crossGen && el.interests.includes("young")){ s += 1; why.push({k:"young", w:1.2}); }
+  if (ev.firstTimer){ s += 1; why.push({k:"first", w:.8}); }
+  s -= 2*(el.declined[ev.cat] || 0);
+  why.sort((a,b) => b.w - a.w);
+  return {ev, s, why, date:d};
+}
+function rankAll(el){ return S.events.map(e => scoreEvent(el, e)).filter(Boolean).sort((a,b) => b.s - a.s); }
+function diversify(list, n){
+  const out = [], cc = {};
+  for (const r of list){ if (out.length >= n) break; if ((cc[r.ev.cat]||0) >= 2) continue; out.push(r); cc[r.ev.cat] = (cc[r.ev.cat]||0) + 1; }
+  return out;
+}
+function picksFor(el, n=3){
+  const ranked = rankAll(el);
+  const ai = S.ai[el.id];
+  if (ai){
+    const out = [];
+    for (const p of ai.picks){ const r = ranked.find(x => x.ev.id === p.id); if (r) out.push({...r, ai:p}); }
+    for (const r of diversify(ranked, n+3)){ if (out.length >= n) break; if (!out.some(x => x.ev.id === r.ev.id)) out.push(r); }
+    return out.slice(0, n);
+  }
+  return diversify(ranked, n);
+}
+function whyPart(w){
+  switch (w.k){
+    case "int": return J(`${INTERESTS[w.v].ja}がお好き`, `You like ${INTERESTS[w.v].en}`);
+    case "walk": return J(`歩いて約${w.v}分`, `${w.v}-minute walk`);
+    case "bus": return J(`バスで約${w.v}分`, `about ${w.v} minutes by bus`);
+    case "home": return J("ご自宅から参加できます", "you can join from home");
+    case "time": return J(`ご都合の良い${SLOTS[w.v].ja}です`, `fits your free ${SLOTS[w.v].en}s`);
+    case "help": return J("人の役に立てる役割があります", "you can help others here");
+    case "young": return J("若い世代と交流できます", "you'll meet younger people");
+    case "first": return J("初めての方も歓迎", "beginners welcome");
+  }
+  return "";
+}
+function reasonText(r){
+  if (r.ai) return S.lang === "ja" ? r.ai.ja : r.ai.en;
+  const parts = r.why.slice(0,2).map(whyPart).filter(Boolean);
+  if (!parts.length) return "";
+  const t = parts.join(S.lang === "ja" ? " ・ " : " · ");
+  return S.lang === "ja" ? t : t[0].toUpperCase() + t.slice(1);
+}
+
+/* ============ call scripts ============ */
+function templateScript(el, ev){
+  const r = scoreEvent(el, ev) || {why:[]};
+  const sur = surname(el), surEn = el.name.en.split(" ").slice(-1)[0];
+  const d = nextDate(ev), int = r.why.find(w => w.k === "int");
+  const dJa = d ? `${d.getMonth()+1}月${d.getDate()}日、${DOW_JA[d.getDay()]}曜日の${ev.when.start}から` : "";
+  const dEn = d ? `${d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})} at ${ev.when.start}` : "";
+  const reasonJa = int ? `${INTERESTS[int.v].ja}がお好きと伺いましたので、ぴったりだと思いました。` : ev.helping ? "人の役に立てる役割があり、きっと喜ばれます。" : "初めての方も歓迎の、気軽な集まりです。";
+  const reasonEn = int ? `We heard you enjoy ${INTERESTS[int.v].en}, so we thought of you.` : ev.helping ? "There's a role where you can help others, and people would really appreciate it." : "It's a relaxed gathering and newcomers are welcome.";
+  const where = ev.area === "home" ? "" : ev.place.ja;
+  const ja = ev.when.kind === "flex"
+    ? `${sur}さん、こんにちは。「つなぐ」地域案内係です。今日は、${sur}さんに合いそうな催しのご案内でお電話しました。ご自宅から参加できる「${ev.title.ja}」があります。${reasonJa}参加費は${ev.cost?ev.cost+"円":"無料"}です。参加してみたいと思われますか？`
+    : `${sur}さん、こんにちは。「つなぐ」地域案内係です。今日は、${sur}さんに合いそうな催しのご案内でお電話しました。${dJa}、${where}で「${ev.title.ja}」があります。${reasonJa}参加費は${ev.cost?ev.cost+"円":"無料"}です。行ってみたいと思われますか？`;
+  const en = ev.when.kind === "flex"
+    ? `Hello ${surEn}-san, this is the Tsunagu community guide. I'm calling about something we think you'd enjoy. "${ev.title.en}" is something you can take part in from home. ${reasonEn} It's ${ev.cost?"¥"+ev.cost:"free"}. Would you like to join?`
+    : `Hello ${surEn}-san, this is the Tsunagu community guide. I'm calling about an event we think you'd enjoy. On ${dEn}, "${ev.title.en}" is happening at ${ev.place.en}. ${reasonEn} It's ${ev.cost?"¥"+ev.cost:"free"}. Would you like to go?`;
+  return {ja, en, ai:false};
+}
+const scriptKey = (el, ev) => el + "|" + ev;
+function getScript(elId, evId){ return S.scripts[scriptKey(elId, evId)] || templateScript(elder(elId), event(evId)); }
+
+/* ============ AI layer (Claude via the artifact runtime) ============ */
+function aiErr(e){
+  const c = e && e.code;
+  if (c === "not_granted" || c === "sampling_disabled" || c === "not_declared" || c === "capability_disabled"){ AI = null; return J("AI機能はこの画面では使えません。ルールによるおすすめを表示しています。","AI isn't available in this view. Showing rule-based picks."); }
+  if (c === "rate_limited") return J("AIが混み合っています。少し待ってからもう一度お試しください。","AI is busy. Wait a moment and try again.");
+  if (c === "cancelled") return "";
+  return J("AIの応答を読み取れませんでした。ルールによるおすすめはそのまま使えます。","Couldn't read the AI's answer. The rule-based picks still work.");
+}
+function profileForAI(el){
+  return {
+    interests: el.interests.map(i => INTERESTS[i].en),
+    neighborhood: AREAS[el.area].en, travel: el.travel, available: {days: el.days, times: el.times},
+    accessibility_needs: el.access, wants_to_help_others: el.help,
+    recently_declined_categories: Object.keys(el.declined).filter(k => el.declined[k] > 0)
+  };
+}
+async function aiRecommend(elId){
+  const el = elder(elId); if (!AI || !el) return;
+  const cands = rankAll(el).slice(0, 8).map(r => ({
+    id:r.ev.id, title_en:r.ev.title.en, title_ja:r.ev.title.ja, category:r.ev.cat, tags:r.ev.tags,
+    when:r.ev.when.kind === "flex" ? "anytime, from home" : `${r.date.toDateString()} ${r.ev.when.start}`,
+    getting_there: routeLabelEn(el, r.ev), helping_role:r.ev.helping, cross_generational:r.ev.crossGen, beginner_friendly:r.ev.firstTimer, cost_yen:r.ev.cost, rule_score:r.s
+  }));
+  if (!cands.length) return toast(J("条件に合う催しがありません","No matching events right now"));
+  UI.busy["ai-"+elId] = true; render();
+  const prompt = `You help an older adult in Kyoto, Japan find local community events so they feel less isolated. This is not a health service.
+Pick the 3 events from CANDIDATES that best suit this person. Prefer things matching their interests, close by, at times they're free, and (if they want to) where they can help others. Do not pick 3 of the same category. Gently favour beginner-friendly events.
+For each pick write one short, warm reason addressed to the person: reason_ja in plain polite Japanese (max 35 characters, no jargon) and reason_en in plain English (max 14 words).
+Reply with only a JSON array like: [{"id":"e2","reason_ja":"編み物がお好きで、歩いてすぐです","reason_en":"You love knitting, and it's a short walk away"}]
+
+PERSON: ${JSON.stringify(profileForAI(el))}
+CANDIDATES: ${JSON.stringify(cands)}`;
+  try {
+    const out = await AI.json(prompt, {modelTier:"default"});
+    const ids = new Set(cands.map(c => c.id));
+    const picks = (Array.isArray(out) ? out : []).filter(p => p && ids.has(String(p.id))).slice(0,3)
+      .map(p => ({id:String(p.id), ja:String(p.reason_ja||"").slice(0,60), en:String(p.reason_en||"").slice(0,120)}));
+    if (!picks.length) throw {code:"invalid_json"};
+    S.ai[elId] = {picks, at:Date.now()}; save();
+    toast(J("AIがおすすめを選び直しました","AI refined the picks"));
+  } catch(e){ const m = aiErr(e); if (m) toast(m); }
+  finally { delete UI.busy["ai-"+elId]; render(); }
+}
+function routeLabelEn(el, ev){ if (ev.area === "home") return "from home"; const k = km(el.area, ev.area); return k <= 1 ? `${walkMin(k)} min walk` : `${busMin(k)} min by bus`; }
+async function aiScript(elId, evId){
+  const el = elder(elId), ev = event(evId); if (!AI || !el || !ev) return;
+  const r = scoreEvent(el, ev);
+  const key = "sc-"+scriptKey(elId, evId); UI.busy[key] = true; render();
+  const prompt = `Write a short phone-call script for a community-events service in Kyoto that calls older residents to invite them to local events. A staff member (or later a voice agent) reads it aloud.
+Rules for the Japanese script: polite but friendly です/ます form, short sentences, no jargon or katakana-heavy words, at most 6 sentences. Address the person as "${surname(el)}さん". Introduce yourself as the 「つなぐ」地域案内係. Say what the event is, when and where, the cost, and why it was picked for them. End with one simple yes/no question.
+Then give a faithful English translation.
+Reply with only JSON: {"ja":"...","en":"..."}
+
+PERSON: ${JSON.stringify(profileForAI(el))}
+EVENT: ${JSON.stringify({title_ja:ev.title.ja, title_en:ev.title.en, description_ja:ev.desc.ja, when_ja: ev.when.kind==="flex" ? "いつでも（郵送）" : `${fmtJa(nextDate(ev))} ${ev.when.start}〜${ev.when.end}`, place_ja:ev.place.ja, getting_there:routeLabelEn(el, ev), cost_yen:ev.cost, helping_role:ev.helping, cross_generational:ev.crossGen})}
+WHY PICKED: ${JSON.stringify((r ? r.why.slice(0,3) : []).map(w => w.k === "int" ? "likes "+INTERESTS[w.v].en : w.k))}`;
+  try {
+    const out = await AI.json(prompt, {modelTier:"default"});
+    if (!out || typeof out.ja !== "string" || !out.ja.trim()) throw {code:"invalid_json"};
+    S.scripts[scriptKey(elId, evId)] = {ja:out.ja.trim(), en:String(out.en||"").trim(), ai:true}; save();
+    toast(J("AIが通話台本を作成しました","AI wrote the call script"));
+  } catch(e){ const m = aiErr(e); if (m) toast(m); }
+  finally { delete UI.busy[key]; render(); }
+}
+function fmtJa(d){ return d ? `${d.getMonth()+1}月${d.getDate()}日（${DOW_JA[d.getDay()]}）` : ""; }
+
+/* ============ call queue ============ */
+function callQueue(){
+  const q = [];
+  for (const c of S.callReqs){
+    if (c.status === "done") continue;
+    const el = elder(c.elderId), ev = event(c.eventId); if (!el || !ev) continue;
+    q.push({kind:c.by === "elder" ? "asked" : c.by === "staff" ? "weekly" : "family", req:c, el, ev, later:c.status === "later"});
+  }
+  const week = Date.now() - 7*864e5;
+  for (const el of S.elders){
+    if (el.stopCalls || el.contact === "app") continue;
+    if (q.some(x => x.el.id === el.id)) continue;
+    if (S.callLogs.some(l => l.elderId === el.id && l.at > week)) continue;
+    const top = picksFor(el, 1)[0]; if (!top) continue;
+    q.push({kind:"weekly", req:null, el, ev:top.ev, rec:top});
+  }
+  const order = {asked:0, family:1, weekly:2};
+  return q.sort((a,b) => (!!a.later - !!b.later) || order[a.kind] - order[b.kind]);
+}
+function prefTime(el){
+  const d = el.days.map(x => x === "wkday" ? J("平日","weekdays") : J("週末","weekends")).join(J("・"," & "));
+  const t = el.times.map(x => loc(SLOTS[x])).join(J("・",", "));
+  return `${d} ${t}`;
+}
+function recordOutcome(item, outcome){
+  const el = item.el, ev = item.ev;
+  S.callLogs.unshift({id:uid("l"), elderId:el.id, eventId:ev.id, outcome, at:Date.now(), ai:!!(S.scripts[scriptKey(el.id, ev.id)]||{}).ai});
+  const req = item.req || null;
+  if (outcome === "interested"){
+    if (!hasRsvp(el.id, ev.id)) S.rsvps.push({id:uid("r"), elderId:el.id, eventId:ev.id, via:"phone", at:Date.now()});
+    if (req) req.status = "done";
+    toast(J(`${el.name.ja}さんの参加を登録しました`, `${el.name.en} is signed up`));
+  } else if (outcome === "not_now"){
+    el.declined[ev.cat] = (el.declined[ev.cat]||0) + 1;
+    if (req) req.status = "done";
+    toast(J("記録しました。今後はこの種類を控えめにおすすめします","Logged. This kind of event will be suggested less"));
+  } else if (outcome === "later"){
+    if (req) req.status = "later";
+    else S.callReqs.push({id:uid("c"), elderId:el.id, eventId:ev.id, by:"staff", status:"later", at:Date.now()});
+    toast(J("かけ直しリストに入れました","Moved to call-back list"));
+  } else if (outcome === "stop"){
+    el.stopCalls = true; if (el.contact !== "app") el.contact = "app";
+    S.callReqs.forEach(c => { if (c.elderId === el.id) c.status = "done"; });
+    toast(J("今後はお電話しません。アプリでのご案内のみになります","Calls stopped. Suggestions will only appear in the app"));
+  }
+  save();
+}
+
+/* ============ moderation ============ */
+function scanFlags(o){
+  const txt = [o.title, o.desc, o.place, o.audience].join(" ");
+  const f = [];
+  if (/https?:\/\/|www\.|\.com\b|\.jp\b|bit\.ly/i.test(txt)) f.push("link");
+  if (/振込|振り込み|口座|暗証|マイナンバー|保険証|bank|transfer|password|\bpin\b|account number|card number/i.test(txt)) f.push("personal");
+  if (Number(o.cost) > 5000) f.push("fee");
+  return f;
+}
+const FLAG_LABEL = { link:{ja:"外部リンク",en:"External link"}, personal:{ja:"個人情報・送金の要求",en:"Asks for personal info / payment"}, fee:{ja:"高額な参加費",en:"High fee"} };
+const REPORT_REASONS = { unclear:{ja:"情報がわかりにくい・間違っている",en:"Unclear or wrong details"}, spam:{ja:"宣伝・勧誘のようだ",en:"Looks like advertising or sales"}, unsafe:{ja:"不安・危険を感じる",en:"Feels unsafe"}, other:{ja:"その他",en:"Other"} };
+
+/* ============ toast & modal ============ */
+/* ============ motion: springs, projection, rubber-banding ============ */
+const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isSheet = () => matchMedia("(max-width:560px)").matches;
+// Spring described the way Apple does: response (s) and damping ratio (1 = no overshoot).
+// It always starts from the current value and velocity, so it can be interrupted at any frame.
+function spring(from, to, v0, onUpdate, onDone, {response = .34, damping = 1} = {}){
+  const k = (2*Math.PI/response)**2, c = 4*Math.PI*damping/response;
+  let x = from, v = v0, last = performance.now(), id = 0, live = true;
+  const step = t => {
+    if (!live) return;
+    let dt = Math.min(.05, (t - last)/1000); last = t;
+    while (dt > 0){ const h = Math.min(dt, .004); v += (-k*(x - to) - c*v)*h; x += v*h; dt -= h; }
+    if (Math.abs(x - to) < .5 && Math.abs(v) < 8){ onUpdate(to, 0); live = false; onDone && onDone(); return; }
+    onUpdate(x, v); id = requestAnimationFrame(step);
+  };
+  id = requestAnimationFrame(step);
+  return () => { live = false; cancelAnimationFrame(id); return v; };
+}
+const project = (v, d = .99) => (v/1000) * d / (1 - d);              // where a flick would come to rest
+const rubberband = (o, dim, c = .55) => (o*dim*c) / (dim + c*Math.abs(o)); // soft resistance past an edge
+
+let toastT;
+function toast(msg){
+  clearTimeout(toastT);
+  $("#layer").querySelector(".toast")?.remove();
+  const d = document.createElement("div"); d.className = "toast"; d.setAttribute("role","status");
+  d.innerHTML = ico("check") + `<span>${esc(msg)}</span>`;
+  $("#layer").appendChild(d);
+  toastT = setTimeout(() => { d.classList.add("out"); setTimeout(() => d.remove(), 220); }, 3200);
+}
+
+/* modal: centered dialog on wide screens, draggable bottom sheet on phones */
+const sheet = {y:0, v:0, stop:null};
+function setY(m, y){ sheet.y = y; m.style.transform = `translate3d(0,${y}px,0)`; }
+function animY(m, from, to, v, done){
+  sheet.stop && sheet.stop();
+  sheet.stop = spring(from, to, v, (y, vel) => { setY(m, y); sheet.v = vel; }, () => { sheet.stop = null; sheet.v = 0; done && done(); });
+}
+function modalHTML(){ return UI.modal.kind === "call" ? callModal() : reportModal(); }
+function openModal(m){ UI.modal = m; renderModal(); }
+function renderModal(){
+  if (!UI.modal) return;
+  const L = $("#layer");
+  let scrim = L.querySelector(".scrim:not(.closing)");
+  if (scrim){ scrim.querySelector(".modal-body").innerHTML = modalHTML(); return; }   // update in place, no re-entrance
+  scrim = document.createElement("div"); scrim.className = "scrim"; scrim.dataset.act = "scrim";
+  scrim.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="grab" title="${J("下にスワイプして閉じる","Swipe down to close")}"><span></span></div><div class="modal-body">${modalHTML()}</div></div>`;
+  L.appendChild(scrim);
+  const m = scrim.querySelector(".modal");
+  UI.lastFocus = document.activeElement;
+  if (isSheet() && !reduce()){ const h = m.offsetHeight; setY(m, h); requestAnimationFrame(() => { scrim.classList.add("open"); animY(m, h, 0, 0); }); }
+  else requestAnimationFrame(() => scrim.classList.add("open"));
+  bindSheet(scrim, m);
+  m.querySelector(".modal-body button")?.focus({preventScroll:true});
+}
+function closeModal(){
+  stopSpeak();
+  if (!UI.modal) return;
+  UI.modal = null;
+  const scrim = $("#layer .scrim:not(.closing)"); if (!scrim) return;
+  scrim.classList.add("closing"); scrim.classList.remove("open"); scrim.style.removeProperty("--dim");
+  const m = scrim.querySelector(".modal"), done = () => scrim.remove();
+  if (isSheet() && !reduce()) animY(m, sheet.y, m.offsetHeight + 24, Math.max(sheet.v, 0), done);  // leaves the way it came: down
+  else setTimeout(done, reduce() ? 170 : 240);
+  try { UI.lastFocus && document.contains(UI.lastFocus) && UI.lastFocus.focus({preventScroll:true}); } catch(e){}
+}
+function bindSheet(scrim, m){
+  const grab = m.querySelector(".grab");
+  let startY = 0, base = 0, hist = [], dragging = false;
+  grab.addEventListener("pointerdown", e => {
+    if (!isSheet() || reduce()) return;
+    if (sheet.stop){ sheet.stop(); sheet.stop = null; }       // grab it mid-flight; continue from where it is
+    grab.setPointerCapture(e.pointerId);
+    dragging = true; startY = e.clientY; base = sheet.y; hist = [{y:e.clientY, t:e.timeStamp}];
+    m.classList.add("dragging");
+  });
+  grab.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    let y = base + (e.clientY - startY);
+    if (y < 0) y = -rubberband(-y, m.offsetHeight);           // resist pulling up past the top
+    setY(m, y);
+    scrim.style.setProperty("--dim", Math.max(0, 1 - Math.max(0, y) / m.offsetHeight).toFixed(3));
+    hist.push({y:e.clientY, t:e.timeStamp}); if (hist.length > 5) hist.shift();
+  });
+  const end = () => {
+    if (!dragging) return; dragging = false; m.classList.remove("dragging");
+    const a = hist[0], b = hist[hist.length - 1];
+    const v = b.t > a.t ? (b.y - a.y) / ((b.t - a.t) / 1000) : 0;   // px/s at release
+    if (sheet.y + project(v) > m.offsetHeight * .45){ sheet.v = v; closeModal(); }
+    else { scrim.style.setProperty("--dim", 1); animY(m, sheet.y, 0, v); }  // hand the finger's velocity to the spring
+  };
+  grab.addEventListener("pointerup", end);
+  grab.addEventListener("pointercancel", end);
+}
+function callModal(){
+  const it = UI.modal.item, el = it.el, ev = it.ev, sc = getScript(el.id, ev.id);
+  const busy = UI.busy["sc-"+scriptKey(el.id, ev.id)];
+  return `
+  <div class="row" style="justify-content:space-between;align-items:flex-start;flex-wrap:nowrap">
+    <div><p class="eyebrow">${J("通話シミュレーション","Call simulation")}</p><h2>${esc(san(el))}</h2>
+    <p class="muted small">${ico("phone")} ${esc(el.phone)} · ${esc(prefTime(el))}</p></div>
+    <button class="btn btn-sm btn-quiet" data-act="close" aria-label="${J("閉じる","Close")}">${ico("x")}</button>
+  </div>
+  <p class="small" style="margin-top:12px"><strong>${esc(loc(ev.title))}</strong> · ${esc(whenLabel(ev))}</p>
+  <div class="script" id="scr" lang="ja">${esc(sc.ja)}</div>
+  ${S.lang === "en" && sc.en ? `<div class="script en">${esc(sc.en)}</div>` : ""}
+  <div class="row" style="margin-top:12px">
+    <button class="btn btn-ink" data-act="speak">${ico("play")} ${J("読み上げる","Play script")}</button>
+    <button class="btn" data-act="hush">${ico("stop")} ${J("停止","Stop")}</button>
+    ${AI ? `<button class="btn btn-ai" data-act="ai-script" data-el="${el.id}" data-ev="${ev.id}" ${busy?"disabled":""}>${busy ? J("作成中…","Writing…") : J("AIで台本を作る","Write with AI")}</button>` : ""}
+    <span class="chip ${sc.ai ? "ind" : ""}">${sc.ai ? J("AI作成","AI-written") : J("テンプレート","Template")}</span>
+  </div>
+  <p class="small muted" id="tts-note" style="margin-top:8px"></p>
+  <p class="flabel" style="margin-top:18px">${J("通話の結果を記録","Record the outcome")}</p>
+  <div class="outs">
+    <button class="btn btn-accent" data-act="outcome" data-o="interested">${ico("check")} ${J("参加したい","Interested")}</button>
+    <button class="btn" data-act="outcome" data-o="not_now">${J("今回は見送り","Not this time")}</button>
+    <button class="btn" data-act="outcome" data-o="later">${ico("clock")} ${J("あとでかけ直す","Call back later")}</button>
+    <button class="btn" data-act="outcome" data-o="stop">${J("電話は不要","Stop calling me")}</button>
+  </div>`;
+}
+function reportModal(){
+  const ev = event(UI.modal.eventId);
+  return `
+  <div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${J("この催しを報告","Report this event")}</h2>
+  <button class="btn btn-sm btn-quiet" data-act="close" aria-label="${J("閉じる","Close")}">${ico("x")}</button></div>
+  <p class="muted" style="margin-top:6px">${esc(loc(ev.title))}</p>
+  <div class="opts" style="margin-top:16px">
+  ${Object.entries(REPORT_REASONS).map(([k,v]) => `<button class="opt" data-act="report-pick" data-k="${k}" aria-pressed="${UI.modal.reason===k}"><span class="dot"></span>${esc(loc(v))}</button>`).join("")}
+  </div>
+  <div class="row" style="margin-top:18px;justify-content:flex-end">
+    <button class="btn" data-act="close">${J("やめる","Cancel")}</button>
+    <button class="btn btn-ink" data-act="report-send" ${UI.modal.reason ? "" : "disabled"}>${ico("flag")} ${J("報告する","Send report")}</button>
+  </div>`;
+}
+
+/* ============ speech ============ */
+function stopSpeak(){ try { window.speechSynthesis && speechSynthesis.cancel(); } catch(e){} $("#scr")?.classList.remove("speaking"); }
+function speak(text){
+  const note = $("#tts-note");
+  if (!("speechSynthesis" in window)){ if (note) note.textContent = J("このブラウザは読み上げに対応していません。台本を声に出して読んでください。","This browser can't read aloud. Read the script out loud instead."); return; }
+  stopSpeak();
+  const u = new SpeechSynthesisUtterance(text); u.lang = "ja-JP"; u.rate = .92;
+  const v = speechSynthesis.getVoices().find(v => /^ja/i.test(v.lang));
+  if (v) u.voice = v; else if (note) note.textContent = J("日本語の音声が見つからない場合、別の声で読まれることがあります。","No Japanese voice found in this browser, so it may sound off.");
+  u.onend = () => $("#scr")?.classList.remove("speaking");
+  $("#scr")?.classList.add("speaking");
+  speechSynthesis.speak(u);
+}
+
+/* ============ views ============ */
+function header(){
+  const role = S.role;
+  let who = "";
+  if (role === "elder"){ const e = elder(S.actor.elder); who = `${ico("user")} ${J("高齢者","Older adult")}: <strong>${esc(nameOf(e))}</strong>`; }
+  if (role === "family"){ const h = helper(S.actor.helper); who = `${ico("people")} ${h.kind === "family" ? J("ご家族","Family") : J("地域サポーター","Supporter")}: <strong>${esc(loc(h.name))}</strong>`; }
+  if (role === "organizer"){ const o = org(S.actor.org); who = `${ico("building")} ${J("主催者","Organizer")}: <strong>${esc(loc(o.name))}</strong>`; }
+  if (role === "admin"){ who = `${ico("shield")} <strong>${J("運営スタッフ","Tsunagu staff")}</strong>`; }
+  return `<header class="top"><div class="wrap">
+    <a class="brand" href="#home"><b>つなぐ</b><span>Tsunagu</span></a>
+    <span class="demo-tag">${J("試作版","Prototype")}</span>
+    <div class="top-r">
+      ${who ? `<span class="who">${who}</span><a class="btn btn-sm" href="#home">${ico("swap")} ${J("役割を切り替え","Switch role")}</a>` : ""}
+      <div class="seg" role="group" aria-label="Language"><button data-act="lang" data-l="ja" aria-pressed="${S.lang==="ja"}">日本語</button><button data-act="lang" data-l="en" aria-pressed="${S.lang==="en"}">English</button></div>
+    </div></div></header>`;
+}
+
+function viewHome(){
+  const elOpts = S.elders.map(e => `<option value="${e.id}" ${S.actor.elder===e.id?"selected":""}>${esc(nameOf(e))}（${esc(loc(AREAS[e.area]))}）</option>`).join("");
+  const hOpts = S.helpers.map(h => `<option value="${h.id}" ${S.actor.helper===h.id?"selected":""}>${esc(loc(h.name))}（${esc(loc(h.relation))}）</option>`).join("");
+  const oOpts = S.orgs.map(o => `<option value="${o.id}" ${S.actor.org===o.id?"selected":""}>${esc(loc(o.name))}${o.status==="pending"?J("（審査中）"," (in review)"):""}</option>`).join("");
+  const pend = S.orgs.filter(o=>o.status==="pending").length + S.events.filter(e=>e.status==="pending").length;
+  const live = S.events.filter(e => e.status === "published");
+  const board = live.filter(e => nextDate(e)).map(e => ({e, d:nextDate(e)})).sort((a,b) => a.d - b.d || a.e.when.start.localeCompare(b.e.when.start)).slice(0,6);
+  const nOrg = new Set(live.map(e => e.orgId)).size;
+  const acct = (r, title, desc, ctl) => `<div class="acct"><div><b>${title}</b><span>${desc}</span></div><div>${ctl}</div><button class="btn btn-ink" data-act="go-role" data-r="${r}">${J("開く","Open")}</button></div>`;
+  return `
+  <section class="hero">
+    <div>
+      <p class="kicker">${J("京都市 上京区・北区・中京区で試作中","Being trialled in Kamigyō, Kita and Nakagyō wards, Kyoto")}</p>
+      <h1 style="margin-top:8px">${J("近所の集まりを、<br>お電話でお知らせします。","Gatherings near home,<br>told to you by phone.")}</h1>
+      <p class="lead">${J("体操、編み物、囲碁、小学校での昔あそび。好きなことと住んでいる場所をうかがって、近くの集まりを週に一度ご案内します。スマホがなくても、電話だけで申し込めます。","Exercise classes, knitting, go, old-time games at the primary school. Tell us what you enjoy and where you live, and once a week we'll let you know about a few gatherings nearby. No smartphone needed: a phone call is enough.")}</p>
+      <div class="row">
+        <a class="btn btn-accent" href="#register" data-act="reg-start" data-mode="self">${J("自分で登録する","Register for myself")}</a>
+        <a class="btn" href="#register" data-act="reg-start" data-mode="family">${J("家族を登録する","Register a family member")}</a>
+        <a class="btn" href="#join">${J("催しを載せたい方へ","For event organizers")}</a>
+      </div>
+    </div>
+    <aside class="board" aria-label="${J("近日の催し","Coming up")}">
+      <h2>${J("近日の催し","Coming up")}<small>${J(`${live.length}件掲載・${nOrg}団体`, `${live.length} listed by ${nOrg} organizers`)}</small></h2>
+      <ol>${board.map(({e, d}) => `<li><time>${S.lang === "ja" ? `${d.getMonth()+1}/${d.getDate()}<small>${DOW_JA[d.getDay()]}曜</small>` : `${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})}<small>${DOW_EN[d.getDay()]}</small>`}</time>
+        <div><b>${esc(loc(e.title))}</b><span>${esc(e.when.start)}${J("〜",",")} ${esc(loc(e.place))}</span></div></li>`).join("")}</ol>
+    </aside>
+  </section>
+
+  <section>
+    <h2 class="sec-h">${J("デモ用アカウント","Demo accounts")}</h2>
+    <p class="muted">${J("見たい立場を選んで「開く」を押してください。","Choose whose screen you want to see, then press Open.")}</p>
+    <div class="accts">
+      ${acct("elder", J("高齢者ご本人","Older adult"), J("大きな文字の画面。今週のおすすめ3件と参加予定。","Large text: three suggestions and their upcoming events."), `<select id="pick-el" class="inp" aria-label="${J("人物","Person")}">${elOpts}</select>`)}
+      ${acct("family", J("ご家族・地域サポーター","Family or local supporter"), J("代わりに登録した方の、おすすめと申込状況。","Suggestions and sign-ups for the people they registered."), `<select id="pick-h" class="inp" aria-label="${J("人物","Person")}">${hOpts}</select>`)}
+      ${acct("organizer", J("主催者","Event organizer"), J("催しの掲載と、申込・電話希望の確認。","Post events; see sign-ups and call requests."), `<select id="pick-o" class="inp" aria-label="${J("団体","Organizer")}">${oOpts}</select>`)}
+      ${acct("admin", J("運営スタッフ","Tsunagu staff"), J("電話をかける順番、掲載の審査、報告への対応。","Who to call next, approvals and reports."), `<p class="counts">${J("電話待ち","Calls due")} <strong>${callQueue().length}</strong>${J("件","")}　${J("審査待ち","to review")} <strong>${pend}</strong>${J("件","")}</p>`)}
+    </div>
+  </section>
+
+  <section style="margin-top:40px">
+    <h2 class="sec-h">${J("発表のときの順番（約5分）","Running the demo (about 5 minutes)")}</h2>
+    <p class="muted">${J("上から順に「開く」を押していくと、一通りの流れを見せられます。","Press Open on each line in turn to walk through the whole flow.")}</p>
+    <ol class="demo-path">
+      ${[
+        [J("主催者が催しを載せる","An organizer posts an event"), J("西陣長寿すこやかセンターとして「例を入力」→「掲載する」","As Nishijin Longevity Center: Fill example, then Publish"), "demo-post"],
+        [J("ハナさんの画面に出てくる","It shows up for Hana"), J("山本ハナさんのおすすめの一番上に、理由つきで出ます","At the top of Hana Yamamoto's suggestions, with the reason"), "demo-elder"],
+        [J("「電話で詳しく聞きたい」を押す","She asks for a call"), J("運営の電話リストに入ります","She's added to the staff call list"), "demo-elder"],
+        [J("運営が電話をかける（試し）","Staff make the call (simulated)"), J("台本を読み上げて「参加したい」を記録","Play the script and record Interested"), "demo-admin"],
+        [J("主催者の画面で申込を確認","The organizer sees the sign-up"), J("申込数が増え、「電話で申込」と出ます","The count goes up, marked as signed up by phone"), "demo-org"]
+      ].map((s,i) => `<li class="dp"><span class="num">${i+1}</span><div><p>${s[0]}</p><small>${s[1]}</small></div><button class="btn btn-sm" data-act="${s[2]}">${J("開く","Open")}</button></li>`).join("")}
+    </ol>
+  </section>`;
+}
+
+function eventCard(el, r){
+  const ev = r.ev, req = openReq(el.id, ev.id), I = INTERESTS[ev.cat];
+  return `<article class="ecard">
+    <div class="ecat"><span><span class="mark" aria-hidden="true">${I.em}</span>${esc(loc(I))}</span>${r.ai ? `<span class="ai-mark">${J("AIが選択","AI pick")}</span>` : ""}</div>
+    <h3>${esc(loc(ev.title))}</h3>
+    <dl class="edl">
+      <div><dt>${ico("cal")} ${J("いつ","When")}</dt><dd>${esc(whenLabel(ev))}</dd></div>
+      <div><dt>${ico("pin")} ${J("どこで","Where")}</dt><dd>${esc(loc(ev.place))}</dd></div>
+      <div><dt>${ico("walk")} ${J("行き方","Getting there")}</dt><dd>${esc(routeLabel(el, ev))}</dd></div>
+      <div><dt>${ico("yen")} ${J("参加費","Cost")}</dt><dd>${esc(costLabel(ev.cost))}</dd></div>
+    </dl>
+    ${reasonText(r) ? `<p class="why"><strong>${J("おすすめの理由：","Why this one:")}</strong>${esc(reasonText(r))}</p>` : ""}
+    <div class="ebtns">
+      <button class="btn btn-accent" data-act="rsvp" data-ev="${ev.id}">${ico("check")} ${J("行ってみたい","I'd like to go")}</button>
+      ${req ? `<div class="waiting${UI.justReq === req.id ? " fresh" : ""}" role="status">${ico("phone")} ${J("お電話します。少しお待ちください","We'll call you soon")}</div>`
+            : `<button class="btn btn-quiet" data-act="call-me" data-ev="${ev.id}">${ico("phone")} ${J("電話で詳しく聞きたい","Please call me about this")}</button>`}
+    </div>
+    <div><button class="linkish" data-act="report" data-ev="${ev.id}">${ico("flag")} ${J("この催しについて報告","Report this event")}</button></div>
+  </article>`;
+}
+function viewElder(){
+  const el = elder(S.actor.elder);
+  const recs = picksFor(el, 3);
+  const ups = S.rsvps.filter(r => r.elderId === el.id).map(r => ({r, ev:event(r.eventId)})).filter(x => x.ev)
+    .sort((a,b) => (nextDate(a.ev)||Infinity) - (nextDate(b.ev)||Infinity));
+  return `<div class="elder" style="--es:${S.scale}">
+    <div class="e-head">
+      <h1>${J(`こんにちは、${esc(el.name.ja.split(" ")[1] || el.name.ja)}さん`, `Hello, ${esc(el.name.en.split(" ")[0])}`)}</h1>
+      <div class="tsize"><span class="muted">${ico("text")} ${J("文字の大きさ","Text size")}</span>
+        <div class="seg" role="group" aria-label="${J("文字の大きさ","Text size")}">
+          ${[[1,J("標準","A")],[1.2,J("大","A+")],[1.4,J("特大","A++")]].map(([v,l]) => `<button data-act="scale" data-v="${v}" aria-pressed="${S.scale===v}">${l}</button>`).join("")}
+        </div></div>
+    </div>
+    ${el.stopCalls ? `<p class="banner info" style="margin-top:16px;font-size:.8em">${J("お電話でのご案内は止めています。このページでご案内します。","Phone calls are switched off. You'll see suggestions here.")}</p>` : ""}
+    <h2>${J("今週のおすすめ","Suggested for this week")}</h2>
+    ${recs.length ? recs.map(r => eventCard(el, r)).join("") : `<div class="empty">${J("今は新しいおすすめがありません。また来週ご案内します。","No new suggestions right now. We'll have more next week.")}</div>`}
+    <h2>${J("参加予定","My upcoming events")}</h2>
+    ${ups.length ? ups.map(({r, ev}) => { const d = nextDate(ev); return `<div class="up${r.id === UI.justAdded ? " fresh" : ""}">
+      <div class="d">${d ? (S.lang==="ja" ? `${d.getMonth()+1}/${d.getDate()}<small>${DOW_JA[d.getDay()]}曜</small>` : `${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})}<small>${DOW_EN[d.getDay()]}</small>`) : `${J("郵送","Post")}`}</div>
+      <div style="min-width:0"><b>${esc(loc(ev.title))}</b><div class="muted" style="font-size:.85em">${esc(timeRange(ev.when))} ${esc(loc(ev.place))}</div></div>
+      <button class="btn btn-sm" data-act="cancel-rsvp" data-id="${r.id}">${J("取り消す","Cancel")}</button></div>`; }).join("")
+      : `<div class="empty">${J("まだありません。上のおすすめから選べます。","Nothing yet. Pick one from the suggestions above.")}</div>`}
+    <p class="muted" style="margin-top:32px;font-size:.85em">${ico("phone")} ${J("わからないことは、お電話でどうぞ：","Questions? Call us: ")}<strong>${HELPLINE}</strong> ${J("（デモ用の番号）","(demo number)")}</p>
+  </div>`;
+}
+
+function viewFamily(){
+  const h = helper(S.actor.helper);
+  const mine = S.elders.filter(e => e.managedBy === h.id);
+  return `<div class="page-h"><div><p class="eyebrow">${h.kind==="family" ? J("ご家族の画面","Family dashboard") : J("地域サポーターの画面","Community supporter dashboard")}</p>
+    <h1>${esc(loc(h.name))}${J("さん","")}</h1><p class="muted">${esc(loc(h.relation))} · ${J(`${mine.length}人を登録`,`Managing ${mine.length} ${mine.length===1?"person":"people"}`)}</p></div>
+    <a class="btn btn-ink" href="#register" data-act="reg-start" data-mode="${h.kind}" data-helper="${h.id}">${ico("plus")} ${J("ほかの方を登録","Register someone")}</a></div>
+    ${mine.length ? mine.map(el => familyCard(el)).join('<div style="height:18px"></div>') : `<div class="empty">${J("まだ登録した方がいません。","No one registered yet.")}</div>`}`;
+}
+function familyCard(el){
+  const editing = UI.editing && UI.editing.id === el.id;
+  const recs = picksFor(el, 3);
+  const rs = S.rsvps.filter(r => r.elderId === el.id).map(r => ({r, ev:event(r.eventId)})).filter(x => x.ev);
+  const busy = UI.busy["ai-"+el.id];
+  const contact = {phone:J("電話","Phone"), app:J("アプリ","App"), both:J("電話とアプリ","Phone & app")}[el.contact];
+  const prof = editing ? editPanel(el) : `
+    <dl>
+      <dt>${J("地域","Area")}</dt><dd>${esc(areaLabel(el.area))}</dd>
+      <dt>${J("連絡方法","Contact")}</dt><dd>${esc(contact)}${el.stopCalls ? ` <span class="chip warn">${J("電話停止中","Calls off")}</span>` : ""}</dd>
+      <dt>${J("電話の時間","Call times")}</dt><dd>${esc(prefTime(el))}</dd>
+      <dt>${J("移動","Travel")}</dt><dd>${esc({walk:J("歩ける範囲","Walking distance"),bus:J("バスで少し","Short bus ride"),any:J("京都市内どこでも","Anywhere in Kyoto")}[el.travel])}</dd>
+      <dt>${J("役に立ちたい","Help others")}</dt><dd>${esc({yes:J("はい","Yes"),maybe:J("たぶん","Maybe"),no:J("いいえ","No")}[el.help])}</dd>
+    </dl>
+    <div class="chips" style="margin-top:12px">${el.interests.map(i => `<span class="chip acc">${esc(loc(INTERESTS[i]))}</span>`).join("")}</div>
+    <button class="btn btn-sm" style="margin-top:14px" data-act="edit" data-id="${el.id}">${ico("edit")} ${J("編集","Edit")}</button>`;
+  return `<section class="fam-grid">
+    <div class="card pf"><p class="eyebrow">${J("プロフィール","Profile")}</p><h2 style="font-size:22px;margin-top:4px">${esc(san(el))}</h2>${prof}</div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><p class="eyebrow">${J("今週のおすすめ","This week's suggestions")}</p>
+      ${AI ? `<button class="btn btn-sm btn-ai" data-act="ai-rec" data-id="${el.id}" ${busy?"disabled":""}>${busy ? J("AIが選んでいます…","AI is choosing…") : J("AIで選び直す","Refine with AI")}</button>` : ""}</div>
+      ${recs.length ? recs.map(r => { const req = openReq(el.id, r.ev.id); return `<div class="rec"><div style="min-width:0"><b>${esc(loc(r.ev.title))}</b>${r.ai?` <span class="ai-mark">AI</span>`:""}
+        <div class="muted">${esc(whenLabel(r.ev))} · ${esc(routeLabel(el, r.ev))}</div><div class="muted">${esc(reasonText(r))}</div></div>
+        ${req ? `<span class="chip ind">${ico("phone")} ${J("電話予定","Call queued")}</span>` : `<button class="btn btn-sm" data-act="send-phone" data-el="${el.id}" data-ev="${r.ev.id}">${ico("phone")} ${J("電話で伝える","Send by phone")}</button>`}</div>`; }).join("")
+        : `<p class="muted" style="margin-top:10px">${J("条件に合う催しがありません。","No matching events right now.")}</p>`}
+      <p class="eyebrow" style="margin-top:20px">${J("参加予定","Signed up")}</p>
+      ${rs.length ? rs.map(({r, ev}) => `<div class="rec"><div><b>${esc(loc(ev.title))}</b><div class="muted">${esc(whenLabel(ev))}</div></div><span class="chip ok">${{app:J("アプリで申込","via app"),phone:J("電話で申込","via phone"),relative:J("家族が申込","via family")}[r.via]}</span></div>`).join("")
+        : `<p class="muted small" style="margin-top:8px">${J("まだありません","None yet")}</p>`}
+    </div></section>`;
+}
+function editPanel(el){
+  const ed = UI.editing;
+  return `<div class="stack" style="margin-top:12px">
+    <div><p class="flabel">${J("連絡方法","Contact method")}</p><div class="seg" style="margin-top:6px">
+      ${["phone","app","both"].map(c => `<button data-act="ed-contact" data-v="${c}" aria-pressed="${ed.contact===c}">${{phone:J("電話","Phone"),app:J("アプリ","App"),both:J("両方","Both")}[c]}</button>`).join("")}</div></div>
+    <label class="toggle"><input type="checkbox" id="ed-stop" data-act="ed-stop" ${ed.stopCalls?"checked":""}> ${J("電話でのご案内を止める","Stop phone calls")}</label>
+    <div><p class="flabel">${J("興味のあること","Interests")}</p><div class="tiles mini-tiles" style="margin-top:6px">
+      ${Object.entries(INTERESTS).map(([k,v]) => `<button class="tile" data-act="ed-int" data-k="${k}" aria-pressed="${ed.interests.includes(k)}"><span class="em">${v.em}</span>${esc(loc(v))}</button>`).join("")}</div></div>
+    <div class="row"><button class="btn btn-ink" data-act="ed-save">${J("保存","Save")}</button><button class="btn" data-act="ed-cancel">${J("やめる","Cancel")}</button></div>
+  </div>`;
+}
+
+/* organizer */
+function viewOrganizer(){
+  const o = org(S.actor.org);
+  const badge = o.type === "official" ? (o.status === "verified" ? `<span class="chip ok">${ico("shield")} ${J("公式・確認済み","Official · verified")}</span>` : `<span class="chip warn">${J("公式（確認待ち）","Official · awaiting verification")}</span>`)
+    : (o.status === "approved" ? `<span class="chip ind">${J("個人・承認済み","Individual · approved")}</span>` : o.status === "rejected" ? `<span class="chip bad">${J("承認されませんでした","Not approved")}</span>` : `<span class="chip warn">${J("個人・審査中","Individual · pending")}</span>`);
+  const tab = UI.orgTab;
+  return `<div class="page-h"><div><p class="eyebrow">${J("主催者ポータル","Organizer portal")}</p><h1>${esc(loc(o.name))}</h1><div class="row" style="margin-top:6px">${badge}</div></div></div>
+    ${o.status === "pending" ? `<div class="banner">${ico("clock")}<div>${J("運営スタッフが確認中です。掲載した催しは、承認後に公開されます。","Staff are reviewing your account. Events you post will go live once approved.")}</div></div>` : ""}
+    <div class="tabs" role="tablist">
+      ${[["events",J("掲載中の催し","My events")],["new",J("催しを掲載","New event")],["profile",J("団体情報","Profile")]].map(([k,l]) => `<button role="tab" aria-selected="${tab===k}" data-act="org-tab" data-t="${k}">${l}</button>`).join("")}
+    </div>
+    ${tab === "events" ? orgEvents(o) : tab === "new" ? eventForm(o) : orgProfile(o)}`;
+}
+function orgEvents(o){
+  const evs = S.events.filter(e => e.orgId === o.id).sort((a,b) => b.createdAt - a.createdAt);
+  if (!evs.length) return `<div class="empty">${J("まだ掲載がありません。","No events yet.")} <button class="btn btn-sm" data-act="org-tab" data-t="new">${ico("plus")} ${J("催しを掲載","New event")}</button></div>`;
+  return evs.map(ev => {
+    const rs = S.rsvps.filter(r => r.eventId === ev.id), reqs = S.callReqs.filter(c => c.eventId === ev.id && c.status !== "done");
+    const st = {published:`<span class="chip ok">${J("公開中","Live")}</span>`, pending:`<span class="chip warn">${J("審査中","In review")}</span>`, rejected:`<span class="chip bad">${J("非公開","Not published")}</span>`}[ev.status];
+    return `<div class="lrow"><div style="min-width:0">
+      <div class="row" style="gap:8px">${st}${ev.flags.map(f => `<span class="chip bad">${ico("flag")} ${esc(loc(FLAG_LABEL[f]))}</span>`).join("")}${ev.helping?`<span class="chip acc">${J("役割あり","Helping role")}</span>`:""}${ev.crossGen?`<span class="chip ind">${J("多世代","Cross-generational")}</span>`:""}</div>
+      <h3 style="margin-top:8px">${esc(loc(ev.title))}</h3>
+      <div class="meta"><span>${ico("cal")} ${esc(schedLabel(ev))}</span><span>${ico("pin")} ${esc(loc(ev.place))}</span><span>${ico("yen")} ${esc(costLabel(ev.cost))}</span></div>
+      ${rs.length || reqs.length ? `<details class="att"><summary>${J("参加者と電話希望を見る","See sign-ups and call requests")}</summary><ul>
+        ${rs.map(r => `<li>${esc(nameOf(elder(r.elderId)))} — ${{app:J("アプリで申込","signed up in app"),phone:J("電話で申込","signed up by phone"),relative:J("家族が申込","signed up by family")}[r.via]}</li>`).join("")}
+        ${reqs.map(c => `<li>${esc(nameOf(elder(c.elderId)))} — ${J("電話での説明を希望","asked for a call")}</li>`).join("")}</ul></details>` : ""}
+    </div>
+    <div class="acts" style="text-align:right"><div><div class="stat" style="font-size:22px">${rs.length}<span class="muted" style="font-size:14px;font-weight:400"> / ${ev.capacity}</span></div><div class="small muted">${J("申込","signed up")}</div>
+      ${reqs.length ? `<div class="chip ind" style="margin-top:6px">${ico("phone")} ${reqs.length} ${J("件の電話希望","call requests")}</div>` : ""}</div></div></div>`;
+  }).join("");
+}
+function blankEF(){ return {title:"", cat:"crafts", tags:[], desc:"", kind:"weekly", date:addDays(7), dow:3, nth:1, start:"13:30", end:"15:00", place:"", area:"nishijin", access:[], cost:0, capacity:15, audience:"", helping:false, crossGen:false, firstTimer:true, err:""}; }
+function eventForm(o){
+  const f = UI.ef || (UI.ef = blankEF());
+  const indiv = o.type === "individual" || o.status === "pending";
+  const areaOpts = Object.entries(AREAS).map(([k,a]) => `<option value="${k}" ${f.area===k?"selected":""}>${esc(loc(WARDS[a.ward]))} ${esc(loc(a))}</option>`).join("") + `<option value="home" ${f.area==="home"?"selected":""}>${J("自宅から（郵送・オンライン）","From home (post / online)")}</option>`;
+  return `<form class="card" data-form="event" novalidate>
+    <div class="row" style="justify-content:space-between;margin-bottom:16px"><div><h2 style="font-size:20px">${J("新しい催し","New event")}</h2>
+    <p class="muted small">${indiv ? J("個人の主催者の催しは、運営の確認後に公開されます。","Events from individual organizers are published after a staff check.") : J("公式団体の催しはすぐに公開されます。","Events from verified official organizers go live immediately.")}</p></div>
+    <button type="button" class="btn btn-sm" data-act="ef-example">${J("例を入力","Fill example")}</button></div>
+    <div class="fgrid">
+      <div class="field full"><label for="ef-title">${J("催しの名前","Title")}</label><input id="ef-title" class="inp" data-bind="ef.title" value="${esc(f.title)}" placeholder="${J("例：組紐づくり体験","e.g. Braided-cord workshop")}"></div>
+      <div class="field"><label for="ef-cat">${J("種類","Category")}</label><select id="ef-cat" class="inp" data-bind="ef.cat">${Object.entries(INTERESTS).map(([k,v]) => `<option value="${k}" ${f.cat===k?"selected":""}>${esc(loc(v))}</option>`).join("")}</select></div>
+      <div class="field"><label for="ef-area">${J("地域","Area")}</label><select id="ef-area" class="inp" data-bind="ef.area">${areaOpts}</select></div>
+      <div class="field full"><span class="flabel">${J("関連する興味（複数可）","Interest tags (choose any)")}</span><div class="chips">
+        ${Object.entries(INTERESTS).map(([k,v]) => `<button type="button" class="chip" style="min-height:36px;cursor:pointer;border:1px solid ${f.tags.includes(k)?"var(--indigo)":"var(--line)"};${f.tags.includes(k)?"background:var(--indigo-soft);color:var(--indigo)":""}" data-act="ef-tag" data-k="${k}" aria-pressed="${f.tags.includes(k)}">${esc(loc(v))}</button>`).join("")}</div></div>
+      <div class="field full"><label for="ef-desc">${J("説明（やさしい言葉で）","Description (plain language)")}</label><textarea id="ef-desc" class="inp" data-bind="ef.desc">${esc(f.desc)}</textarea><span class="hint">${J("短い文で、何をするか・持ち物を書いてください。","Short sentences: what happens, what to bring.")}</span></div>
+      <div class="field"><label for="ef-kind">${J("日程","Schedule")}</label><select id="ef-kind" class="inp" data-bind="ef.kind" data-rerender="1">
+        ${[["once",J("1回のみ","One time")],["weekly",J("毎週","Weekly")],["monthly",J("毎月","Monthly")]].map(([k,l]) => `<option value="${k}" ${f.kind===k?"selected":""}>${l}</option>`).join("")}</select></div>
+      ${f.kind === "once" ? `<div class="field"><label for="ef-date">${J("日付","Date")}</label><input id="ef-date" type="date" class="inp" data-bind="ef.date" value="${esc(f.date)}"></div>`
+        : `<div class="field"><label for="ef-dow">${J("曜日","Day")}</label><div class="row" style="gap:8px;flex-wrap:nowrap">
+          ${f.kind === "monthly" ? `<select id="ef-nth" class="inp" data-bind="ef.nth" aria-label="${J("第何週","Which week")}">${[1,2,3,4].map(n => `<option value="${n}" ${+f.nth===n?"selected":""}>${J(`第${n}`, ord(n))}</option>`).join("")}</select>` : ""}
+          <select id="ef-dow" class="inp" data-bind="ef.dow">${DOW_EN.map((d,i) => `<option value="${i}" ${+f.dow===i?"selected":""}>${J(DOW_JA[i]+"曜日", d)}</option>`).join("")}</select></div></div>`}
+      <div class="field"><label for="ef-start">${J("開始","Starts")}</label><input id="ef-start" type="time" class="inp" data-bind="ef.start" value="${esc(f.start)}"></div>
+      <div class="field"><label for="ef-end">${J("終了","Ends")}</label><input id="ef-end" type="time" class="inp" data-bind="ef.end" value="${esc(f.end)}"></div>
+      <div class="field full"><label for="ef-place">${J("会場","Venue")}</label><input id="ef-place" class="inp" data-bind="ef.place" value="${esc(f.place)}" placeholder="${J("例：西陣ふれあいサロン","e.g. Nishijin Community Salon")}"></div>
+      <div class="field full"><span class="flabel">${J("バリアフリー","Accessibility")}</span><div class="row">
+        ${Object.entries(ACCESS).map(([k,v]) => `<label class="toggle"><input type="checkbox" data-act="ef-access" data-k="${k}" ${f.access.includes(k)?"checked":""}> ${esc(loc(v))}</label>`).join("")}</div></div>
+      <div class="field"><label for="ef-cost">${J("参加費（円）","Cost (yen)")}</label><input id="ef-cost" type="number" min="0" step="100" class="inp" data-bind="ef.cost" value="${esc(f.cost)}"></div>
+      <div class="field"><label for="ef-cap">${J("定員","Capacity")}</label><input id="ef-cap" type="number" min="1" class="inp" data-bind="ef.capacity" value="${esc(f.capacity)}"></div>
+      <div class="field full"><label for="ef-aud">${J("対象","Who it's for")}</label><input id="ef-aud" class="inp" data-bind="ef.audience" value="${esc(f.audience)}" placeholder="${J("例：どなたでも。初めての方歓迎","e.g. Anyone; first-timers welcome")}"></div>
+      <div class="field full">
+        <label class="toggle"><input type="checkbox" data-act="ef-flag" data-k="helping" ${f.helping?"checked":""}> ${J("人の役に立てる役割がある（教える・見守る・読み聞かせ など）","Includes a helping role (teach a skill, mentor students, read to children…)")}</label>
+        <label class="toggle"><input type="checkbox" data-act="ef-flag" data-k="crossGen" ${f.crossGen?"checked":""}> ${J("多世代の交流に向いている","Good for cross-generational connection")}</label>
+        <label class="toggle"><input type="checkbox" data-act="ef-flag" data-k="firstTimer" ${f.firstTimer?"checked":""}> ${J("初めての方歓迎","Beginners welcome")}</label>
+      </div>
+    </div>
+    ${f.err ? `<p class="err" role="alert">${esc(f.err)}</p>` : ""}
+    <div class="row" style="margin-top:20px;justify-content:flex-end"><button type="button" class="btn" data-act="ef-reset">${J("クリア","Clear")}</button>
+    <button type="submit" class="btn btn-accent">${ico("check")} ${indiv ? J("審査に出す","Submit for review") : J("掲載する","Publish event")}</button></div>
+  </form>`;
+}
+function orgProfile(o){
+  return `<div class="card pf"><dl>
+    <dt>${J("名前","Name")}</dt><dd>${esc(loc(o.name))}</dd>
+    <dt>${J("種別","Type")}</dt><dd>${o.type==="official"?J("公式（行政・長寿センター）","Official (government / longevity center)"):J("個人・グループ","Individual / group")}</dd>
+    <dt>${J("連絡先","Contact")}</dt><dd>${esc(o.contact)}</dd>
+    <dt>${J("紹介","About")}</dt><dd>${esc(loc(o.bio))}</dd>
+    <dt>${J("今週の掲載数","Posted this week")}</dt><dd>${weekCount(o.id)}${o.type==="individual"?" / 3":""}</dd></dl></div>`;
+}
+const weekCount = oid => S.events.filter(e => e.orgId === oid && e.createdAt > Date.now() - 7*864e5).length;
+
+function viewJoin(){
+  const f = UI.of || (UI.of = {name:"", type:"individual", contact:"", bio:"", err:""});
+  return `<div class="wiz"><p class="eyebrow">${J("主催者の登録","Organizer sign-up")}</p><h1>${J("催しを掲載する","Post events on Tsunagu")}</h1>
+  <p class="q">${J("登録後、運営スタッフが確認してから掲載できるようになります。","After you sign up, staff check your account before your events go live.")}</p>
+  <form class="card stack" data-form="org" novalidate>
+    <div class="field"><label for="of-name">${J("団体名・お名前","Organization or your name")}</label><input id="of-name" class="inp" data-bind="of.name" value="${esc(f.name)}"></div>
+    <div><p class="flabel">${J("種別","Type")}</p><div class="opts" style="margin-top:6px">
+      ${[["official",J("公式（行政・長寿センターなど）","Official (government, longevity center…)")],["individual",J("個人・グループ（メンター、ボランティア、文通など）","Individual or group (mentoring, volunteering, pen pals…)")]].map(([k,l]) => `<button type="button" class="opt" data-act="of-type" data-v="${k}" aria-pressed="${f.type===k}"><span class="dot"></span>${l}</button>`).join("")}</div></div>
+    <div class="field"><label for="of-contact">${J("連絡先（電話またはメール）","Contact (phone or email)")}</label><input id="of-contact" class="inp" data-bind="of.contact" value="${esc(f.contact)}"></div>
+    <div class="field"><label for="of-bio">${J("紹介文","Short bio")}</label><textarea id="of-bio" class="inp" data-bind="of.bio">${esc(f.bio)}</textarea></div>
+    ${f.err ? `<p class="err" role="alert">${esc(f.err)}</p>` : ""}
+    <div class="row" style="justify-content:flex-end"><a class="btn" href="#home">${J("戻る","Back")}</a><button type="submit" class="btn btn-accent">${J("登録する","Sign up")}</button></div>
+  </form></div>`;
+}
+
+/* admin */
+function viewAdmin(){
+  const q = callQueue();
+  const pOrgs = S.orgs.filter(o => o.status === "pending"), pEvs = S.events.filter(e => e.status === "pending");
+  const reps = S.reports.filter(r => r.status === "open");
+  const tab = UI.adminTab;
+  return `<div class="page-h"><div><p class="eyebrow">${J("運営スタッフ","Tsunagu staff")}</p><h1>${J("運営画面","Operations")}</h1></div>
+    ${!AI ? `<p class="small muted">${J("AI機能なし：ルールとテンプレートで動作中","AI off: using rules and templates")}</p>` : ""}</div>
+    <div class="tabs" role="tablist">
+      ${[["calls",J("電話キュー","Call queue"),q.length],["mod",J("審査","Moderation"),pOrgs.length+pEvs.length],["reports",J("報告","Reports"),reps.length],["log",J("通話記録","Call log"),S.callLogs.length]]
+        .map(([k,l,n]) => `<button role="tab" aria-selected="${tab===k}" data-act="admin-tab" data-t="${k}">${l}<span class="count">${n}</span></button>`).join("")}
+    </div>
+    ${tab === "calls" ? adminCalls(q) : tab === "mod" ? adminMod(pOrgs, pEvs) : tab === "reports" ? adminReports(reps) : adminLog()}`;
+}
+function adminCalls(q){
+  if (!q.length) return `<div class="empty">${J("今、電話をかける予定はありません。","No calls due right now.")}</div>`;
+  const kindChip = it => it.later ? `<span class="chip warn">${ico("clock")} ${J("かけ直し","Call back")}</span>`
+    : it.kind === "asked" ? `<span class="chip acc">${J("本人が希望","Asked by the person")}</span>`
+    : it.kind === "family" ? `<span class="chip ind">${J("家族・サポーターから","From family / supporter")}</span>`
+    : `<span class="chip">${J("週1回のご案内","Weekly suggestion")}</span>`;
+  return `<p class="muted small" style="margin-bottom:12px">${J("本物の電話はまだつながりません。「通話を試す」で、台本の読み上げと結果の記録ができます。","Real calls aren't connected yet. “Simulate call” reads the script aloud and records the outcome.")}</p>` +
+  q.map((it, i) => {
+    const r = it.rec || scoreEvent(it.el, it.ev);
+    const sc = S.scripts[scriptKey(it.el.id, it.ev.id)];
+    return `<div class="lrow"><div style="min-width:0">
+      <div class="row" style="gap:8px">${kindChip(it)}${sc && sc.ai ? `<span class="chip ind">${J("AI台本","AI script")}</span>` : ""}</div>
+      <h3 style="margin-top:8px">${esc(san(it.el))} <span class="muted small" style="font-weight:400">→ ${esc(loc(it.ev.title))}</span></h3>
+      <div class="meta"><span>${ico("phone")} ${esc(it.el.phone)}</span><span>${ico("clock")} ${esc(prefTime(it.el))}</span><span>${ico("cal")} ${esc(whenLabel(it.ev))}</span></div>
+      ${r ? `<p class="small muted" style="margin-top:6px">${esc(reasonText(r))}</p>` : ""}
+    </div><div class="acts"><button class="btn btn-ink" data-act="sim-call" data-i="${i}">${ico("phone")} ${J("通話を試す","Simulate call")}</button></div></div>`;
+  }).join("");
+}
+function adminMod(pOrgs, pEvs){
+  const orgsH = pOrgs.length ? pOrgs.map(o => `<div class="lrow"><div><div class="row" style="gap:8px"><span class="chip">${o.type==="official"?J("公式","Official"):J("個人","Individual")}</span></div>
+    <h3 style="margin-top:8px">${esc(loc(o.name))}</h3><p class="small muted">${esc(loc(o.bio))}</p><div class="meta"><span>${esc(o.contact)}</span></div></div>
+    <div class="acts"><button class="btn btn-sm" data-act="org-reject" data-id="${o.id}">${J("却下","Reject")}</button><button class="btn btn-sm btn-ink" data-act="org-approve" data-id="${o.id}">${ico("check")} ${J("承認","Approve")}</button></div></div>`).join("")
+    : `<p class="muted small">${J("ありません","None")}</p>`;
+  const evH = pEvs.length ? pEvs.map(ev => { const o = org(ev.orgId); return `<div class="lrow"><div style="min-width:0">
+    <div class="row" style="gap:8px">${ev.flags.length ? ev.flags.map(f => `<span class="chip bad">${ico("flag")} ${esc(loc(FLAG_LABEL[f]))}</span>`).join("") : `<span class="chip ok">${J("自動チェック：問題なし","Auto-check: clear")}</span>`}${o.status==="pending"?`<span class="chip warn">${J("主催者も審査中","Organizer also pending")}</span>`:""}</div>
+    <h3 style="margin-top:8px">${esc(loc(ev.title))}</h3><p class="small">${esc(loc(ev.desc))}</p>
+    <div class="meta"><span>${ico("building")} ${esc(loc(o.name))}</span><span>${ico("cal")} ${esc(schedLabel(ev))}</span><span>${ico("yen")} ${esc(costLabel(ev.cost))}</span></div></div>
+    <div class="acts"><button class="btn btn-sm" data-act="ev-reject" data-id="${ev.id}">${J("却下","Reject")}</button><button class="btn btn-sm btn-ink" data-act="ev-approve" data-id="${ev.id}">${ico("check")} ${J("公開","Publish")}</button></div></div>`; }).join("")
+    : `<p class="muted small">${J("ありません","None")}</p>`;
+  return `<p class="muted small" style="margin-bottom:14px">${J("迷惑な掲載を防ぐため：個人の主催者は承認制、1週間に3件まで。外部リンク・個人情報や送金の要求・高額な参加費は自動で止めます。","Spam safeguards: individual organizers need approval and can post 3 events a week. External links, requests for personal info or payment, and high fees are held automatically.")}</p>
+    <h2 class="sec-h" style="font-size:18px">${J("主催者の審査","Organizers to review")}</h2>${orgsH}
+    <h2 class="sec-h" style="font-size:18px;margin-top:24px">${J("催しの審査","Events to review")}</h2>${evH}`;
+}
+function adminReports(reps){
+  if (!reps.length) return `<div class="empty">${J("未対応の報告はありません。","No open reports.")}</div>`;
+  return reps.map(p => { const ev = event(p.eventId); return `<div class="lrow"><div style="min-width:0"><span class="chip bad">${ico("flag")} ${esc(loc(REPORT_REASONS[p.reason]))}</span>
+    <h3 style="margin-top:8px">${esc(loc(ev.title))}</h3>${p.note ? `<p class="small muted">“${esc(loc(p.note))}”</p>` : ""}<div class="meta"><span>${esc(loc(org(ev.orgId).name))}</span><span>${new Date(p.at).toLocaleDateString()}</span></div></div>
+    <div class="acts"><button class="btn btn-sm" data-act="rep-dismiss" data-id="${p.id}">${J("問題なし","Dismiss")}</button><button class="btn btn-sm btn-ink" data-act="rep-unpublish" data-id="${p.id}">${J("非公開にする","Unpublish event")}</button></div></div>`; }).join("");
+}
+function adminLog(){
+  if (!S.callLogs.length) return `<div class="empty">${J("記録はまだありません。","No calls logged yet.")}</div>`;
+  const L = {interested:[J("参加したい","Interested"),"ok"], not_now:[J("今回は見送り","Not this time"),""], later:[J("かけ直し","Call back later"),"warn"], stop:[J("電話は不要","Stop calling"),"bad"]};
+  return S.callLogs.map(l => { const el = elder(l.elderId), ev = event(l.eventId); if (!el || !ev) return ""; return `<div class="lrow"><div><h3>${esc(san(el))} <span class="muted small" style="font-weight:400">→ ${esc(loc(ev.title))}</span></h3>
+    <div class="meta"><span>${new Date(l.at).toLocaleString(S.lang==="ja"?"ja-JP":"en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</span>${l.ai?`<span>${J("AI台本","AI script")}</span>`:""}</div></div>
+    <div class="acts"><span class="chip ${L[l.outcome][1]}">${L[l.outcome][0]}</span></div></div>`; }).join("");
+}
+
+/* registration wizard */
+function regSteps(r){ return (r.mode === "self" ? [] : ["helper"]).concat(["name","contact","area","interests","travel","help","consent"]); }
+function newReg(mode, helperId){ return {mode, helperId:helperId||null, step:0, hName:"", relation:mode==="supporter"?J("民生委員","Welfare volunteer"):"", wantsCopy:true, name:"", phone:"", contact:"phone", days:["wkday"], times:["am"], area:"nishijin", interests:[], travel:"walk", access:[], help:"maybe", consent:false, err:""}; }
+function viewRegister(){
+  const r = UI.reg || (UI.reg = newReg("self"));
+  const steps = regSteps(r), st = steps[r.step], N = steps.length;
+  const forOther = r.mode !== "self";
+  const opt = (field, v, label) => `<button type="button" class="opt" data-act="reg-set" data-f="${field}" data-v="${v}" aria-pressed="${r[field]===v}"><span class="dot"></span>${label}</button>`;
+  const multi = (field, v, label) => `<button type="button" class="opt" data-act="reg-toggle" data-f="${field}" data-v="${v}" aria-pressed="${r[field].includes(v)}"><span class="dot"></span>${label}</button>`;
+  let title = "", q = "", body = "";
+  if (st === "helper"){
+    title = r.mode === "family" ? J("あなたについて","About you") : J("サポーターについて","About you (supporter)");
+    q = r.mode === "family" ? J("ご家族の方の情報を教えてください。","Tell us about yourself, the family member registering.") : J("ご家族と連絡がとれない方を、地域の方が代わりに登録できます。","Local supporters can register someone who has no family in contact.");
+    const hasHelper = r.helperId && helper(r.helperId);
+    body = hasHelper ? `<div class="consent">${J("登録者：","Registering as: ")}<strong>${esc(loc(helper(r.helperId).name))}</strong>（${esc(loc(helper(r.helperId).relation))}）</div>` : `<div class="stack">
+      <div class="field"><label for="rg-h">${J("お名前","Your name")}</label><input id="rg-h" class="inp" data-bind="reg.hName" value="${esc(r.hName)}"></div>
+      <div class="field"><label for="rg-rel">${r.mode==="family"?J("ご関係（例：娘、息子、孫）","Relationship (e.g. daughter, son, grandchild)"):J("お立場（例：民生委員、センター職員）","Role (e.g. welfare volunteer, center staff)")}</label><input id="rg-rel" class="inp" data-bind="reg.relation" value="${esc(r.relation)}"></div></div>`;
+    body += `<p class="flabel" style="margin-top:18px">${J("おすすめの写しを受け取りますか？","Would you like a copy of the suggestions?")}</p><div class="opts" style="margin-top:8px">${opt("wantsCopy", true, J("はい、受け取る","Yes, send me a copy"))}${opt("wantsCopy", false, J("いいえ","No thanks"))}</div>`;
+  }
+  if (st === "name"){
+    title = forOther ? J("ご本人のお名前","Their name") : J("お名前","Your name");
+    q = J("お電話でご案内するときに使います。","We use this when we call with suggestions.");
+    body = `<div class="stack"><div class="field"><label for="rg-name">${J("お名前（例：山田 花子）","Name (e.g. Hanako Yamada)")}</label><input id="rg-name" class="inp" data-bind="reg.name" value="${esc(r.name)}" autocomplete="name"></div>
+      <div class="field"><label for="rg-phone">${J("電話番号","Phone number")}</label><input id="rg-phone" class="inp" type="tel" data-bind="reg.phone" value="${esc(r.phone)}" inputmode="tel" placeholder="075-123-4567"></div></div>`;
+  }
+  if (st === "contact"){
+    title = J("ご案内の方法","How should we reach you?");
+    q = J("いちばん楽な方法を選んでください。","Choose the easiest way.");
+    body = `<div class="opts">${opt("contact","phone",J("電話で","By phone call"))}${opt("contact","app",J("アプリで","In the app"))}${opt("contact","both",J("電話とアプリの両方","Both"))}</div>
+      <p class="flabel" style="margin-top:22px">${J("都合の良い日（複数可）","Good days (choose any)")}</p><div class="opts" style="margin-top:8px;grid-template-columns:1fr 1fr">${multi("days","wkday",J("平日","Weekdays"))}${multi("days","wkend",J("週末","Weekends"))}</div>
+      <p class="flabel" style="margin-top:18px">${J("都合の良い時間（複数可）","Good times (choose any)")}</p><div class="opts" style="margin-top:8px;grid-template-columns:repeat(3,1fr)">${multi("times","am",J("午前","Morning"))}${multi("times","pm",J("午後","Afternoon"))}${multi("times","eve",J("夕方","Evening"))}</div>`;
+  }
+  if (st === "area"){
+    title = J("お住まいの地域","Where do you live?");
+    q = J("近くの催しを探すために使います。","We use this to find events nearby.");
+    body = `<div class="field"><label for="rg-area">${J("区・地域","Ward and neighborhood")}</label><select id="rg-area" class="inp" data-bind="reg.area">
+      ${Object.entries(WARDS).map(([wk,w]) => `<optgroup label="${esc(loc(w))}">${Object.entries(AREAS).filter(([,a]) => a.ward===wk).map(([k,a]) => `<option value="${k}" ${r.area===k?"selected":""}>${esc(loc(w))} ${esc(loc(a))}</option>`).join("")}</optgroup>`).join("")}</select></div>`;
+  }
+  if (st === "interests"){
+    title = J("好きなこと・やってみたいこと","What do you enjoy?");
+    q = J("いくつでも選べます。","Choose as many as you like.");
+    body = `<div class="tiles">${Object.entries(INTERESTS).map(([k,v]) => `<button type="button" class="tile" data-act="reg-toggle" data-f="interests" data-v="${k}" aria-pressed="${r.interests.includes(k)}"><span class="em">${v.em}</span>${esc(loc(v))}</button>`).join("")}</div>`;
+  }
+  if (st === "travel"){
+    title = J("どこまで出かけられますか？","How far can you travel?");
+    q = J("無理のない範囲で選んでください。","Pick what feels comfortable.");
+    body = `<div class="opts">${opt("travel","walk",J("歩いて行ける範囲","Walking distance"))}${opt("travel","bus",J("バスで少し","A short bus ride"))}${opt("travel","any",J("京都市内ならどこでも","Anywhere in Kyoto"))}</div>
+      <p class="flabel" style="margin-top:22px">${J("あると助かること（任意）","Helpful to have (optional)")}</p><div class="opts" style="margin-top:8px">${Object.entries(ACCESS).map(([k,v]) => multi("access", k, loc(v))).join("")}</div>`;
+  }
+  if (st === "help"){
+    title = J("人の役に立つ機会はいかがですか？","Would you like a chance to help others?");
+    q = J("子どもに遊びを教える、学生に手仕事を伝える、など。","For example teaching children old games, or showing students a craft.");
+    body = `<div class="opts">${opt("help","yes",J("はい、ぜひ","Yes, I'd like that"))}${opt("help","maybe",J("内容によって","Maybe, depending on what"))}${opt("help","no",J("今はいいです","Not right now"))}</div>`;
+  }
+  if (st === "consent"){
+    title = J("最後に確認です","One last thing");
+    q = J("情報の使い方について。","How we use this information.");
+    body = `<div class="consent"><p>${J("「つなぐ」が保存するのは：","Tsunagu keeps only:")}</p><ul>
+      <li>${J("お名前と電話番号","Name and phone number")}</li><li>${J("地域、好きなこと、都合の良い日時","Area, interests and good days and times")}</li><li>${J("どの催しに申し込んだか","Which events you sign up for")}</li></ul>
+      <p style="margin-top:10px">${J("この情報は、地域の催しをご案内するためだけに使います。健康に関する情報はうかがいません。電話はいつでも止められます。","We use this only to suggest local events. We don't ask about health. You can stop calls at any time.")}</p></div>
+      <label class="check"><input type="checkbox" id="rg-consent" data-act="reg-consent" ${r.consent?"checked":""}> ${forOther ? J("ご本人の了解を得ています","The person has agreed to this") : J("わかりました。同意します","I understand and agree")}</label>`;
+  }
+  return `<div class="wiz"><p class="eyebrow">${{self:J("ご本人の登録","Register yourself"),family:J("ご家族の登録","Register a family member"),supporter:J("地域サポーターによる登録","Register as a community supporter")}[r.mode]} · ${J(`ステップ ${r.step+1} / ${N}`, `Step ${r.step+1} of ${N}`)}</p>
+    <div class="prog" aria-hidden="true"><i class="${UI.stepDir ? "grow" : ""}" style="width:${(r.step+1)/N*100}%;--from:${(r.step + 1 + (UI.stepDir === "next" ? -1 : UI.stepDir === "back" ? 1 : 0))/N*100}%"></i></div>
+    <div class="wiz-step${UI.stepDir ? " from-" + UI.stepDir : ""}"><h1>${title}</h1><p class="q">${q}</p>${body}</div>
+    ${r.err ? `<p class="err" role="alert">${esc(r.err)}</p>` : ""}
+    <div class="wiz-nav">${r.step > 0 ? `<button class="btn" data-act="reg-back">${J("戻る","Back")}</button>` : `<a class="btn" href="#home">${J("やめる","Cancel")}</a>`}
+    <button class="btn btn-accent" data-act="reg-next">${st === "consent" ? `${ico("check")} ${J("登録する","Finish")}` : J("次へ","Next")}</button></div></div>`;
+}
+function regValidate(r){
+  const st = regSteps(r)[r.step];
+  if (st === "helper" && !r.helperId && !r.hName.trim()) return J("お名前を入力してください。","Please enter your name.");
+  if (st === "name"){ if (!r.name.trim()) return J("お名前を入力してください。","Please enter a name."); if (!/^[0-9０-９\-\s+()]{9,}$/.test(r.phone.trim())) return J("電話番号を数字で入力してください（例：075-123-4567）。","Enter the phone number in digits, e.g. 075-123-4567."); }
+  if (st === "contact" && (!r.days.length || !r.times.length)) return J("都合の良い日と時間を1つ以上選んでください。","Choose at least one day and one time.");
+  if (st === "interests" && !r.interests.length) return J("1つ以上選んでください。","Choose at least one.");
+  if (st === "consent" && !r.consent) return J("チェックを入れてください。","Please tick the box to continue.");
+  return "";
+}
+function regFinish(r){
+  let hid = r.helperId;
+  if (r.mode !== "self" && !hid){
+    hid = uid("h"); S.helpers.push({id:hid, name:{ja:r.hName.trim(), en:r.hName.trim()}, kind:r.mode === "family" ? "family" : "supporter", relation:{ja:r.relation||"", en:r.relation||""}, wantsCopy:r.wantsCopy});
+  }
+  const id = uid("el");
+  const nm = r.name.trim().replace(/\s+/, " ");
+  S.elders.push({id, name:{ja:nm, en:nm}, phone:r.phone.trim(), contact:r.contact, days:r.days, times:r.times, area:r.area, interests:r.interests, travel:r.travel, access:r.access, help:r.help, managedBy:r.mode === "self" ? null : hid, registeredBy:r.mode, declined:{}, stopCalls:false, consentAt:Date.now()});
+  save(); UI.reg = null;
+  if (r.mode === "self"){ S.actor.elder = id; go("elder"); } else { S.actor.helper = hid; go("family"); }
+  toast(J("登録しました","Registered"));
+}
+
+/* ============ routing & render ============ */
+const ROUTES = {home:viewHome, elder:viewElder, family:viewFamily, organizer:viewOrganizer, admin:viewAdmin, register:viewRegister, join:viewJoin};
+function route(){ const h = location.hash.replace("#",""); return ROUTES[h] ? h : "home"; }
+function go(r){ if (location.hash !== "#"+r) location.hash = r; else render(); }
+function render(){
+  const r = route();
+  S.role = ["elder","family","organizer","admin"].includes(r) ? r : null;
+  document.documentElement.lang = S.lang;
+  $("#app").innerHTML = header() + `<main><div class="wrap">${ROUTES[r]()}</div></main>` +
+    `<footer><div class="wrap"><span>${J("つなぐ 試作版 · 京都AIイノベーションラボ · 表示の人物・団体・催しはすべてサンプルです","Tsunagu prototype · Kyoto AI Innovation Lab · all people, organizers and events shown are samples")}</span>
+    <button class="btn btn-sm btn-quiet" data-act="reset">${UI.resetArm ? J("もう一度押すとリセット","Tap again to reset") : J("デモデータをリセット","Reset demo data")}</button></div></footer>`;
+  renderModal();
+  UI.stepDir = UI.justAdded = UI.justReq = null;   // one-shot motion cues are spent once drawn
+}
+window.addEventListener("hashchange", () => { window.scrollTo(0,0); render(); });
+const markScroll = () => { const s = window.scrollY > 4; if (s !== ("scrolled" in document.body.dataset)) { if (s) document.body.dataset.scrolled = ""; else delete document.body.dataset.scrolled; } };
+window.addEventListener("scroll", markScroll, {passive:true});
+
+/* ============ bindings ============ */
+function setPath(path, val){ const [o,k] = path.split("."); if (UI[o]) UI[o][k] = val; }
+document.addEventListener("input", e => { const b = e.target.dataset && e.target.dataset.bind; if (b) setPath(b, e.target.value); });
+document.addEventListener("change", e => {
+  const t = e.target, b = t.dataset && t.dataset.bind;
+  if (b){ setPath(b, t.value); if (t.dataset.rerender) render(); }
+});
+document.addEventListener("submit", e => {
+  const f = e.target.dataset.form; if (!f) return; e.preventDefault();
+  if (f === "event") submitEvent();
+  if (f === "org") submitOrg();
+});
+function submitEvent(){
+  const o = org(S.actor.org), f = UI.ef;
+  f.err = "";
+  if (!f.title.trim() || !f.place.trim() || !f.start) f.err = J("名前・会場・開始時刻を入力してください。","Please fill in the title, venue and start time.");
+  else if (f.kind === "once" && parseYmd(f.date) < today0()) f.err = J("日付は今日以降にしてください。","Pick a date from today onwards.");
+  else if (o.type === "individual" && weekCount(o.id) >= 3) f.err = J("個人の主催者は1週間に3件まで掲載できます。","Individual organizers can post up to 3 events a week.");
+  if (f.err) return render();
+  const flags = scanFlags(f);
+  const indiv = o.type === "individual" || o.status === "pending";
+  const status = (indiv || flags.length) ? "pending" : "published";
+  const when = f.kind === "once" ? {kind:"once", date:f.date, start:f.start, end:f.end} : f.kind === "weekly" ? {kind:"weekly", dow:+f.dow, start:f.start, end:f.end} : {kind:"monthly", nth:+f.nth, dow:+f.dow, start:f.start, end:f.end};
+  const same = s => ({ja:s, en:s});
+  const bi = k => (f.ex && f.ex[k] && Object.values(f.ex[k]).includes(f[k])) ? f.ex[k] : same(f[k].trim());
+  S.events.push({id:uid("e"), orgId:o.id, cat:f.cat, tags:Array.from(new Set([f.cat, ...f.tags])), title:bi("title"), desc:bi("desc"), when, place:bi("place"), area:f.area, access:f.access, cost:Math.max(0, +f.cost||0), capacity:Math.max(1, +f.capacity||1), audience:bi("audience"), helping:f.helping, crossGen:f.crossGen, firstTimer:f.firstTimer, status, flags, createdAt:Date.now()});
+  if (status === "published") S.ai = {};
+  save(); UI.ef = null; UI.orgTab = "events";
+  toast(status === "published" ? J("掲載しました。条件に合う方のおすすめに表示されます","Published. It will now show for people it suits") : flags.length ? J("自動チェックで確認が必要になりました。運営が確認します","Held by the auto-check for a staff review") : J("審査に出しました","Submitted for review"));
+  render();
+}
+function submitOrg(){
+  const f = UI.of; f.err = "";
+  if (!f.name.trim() || !f.contact.trim()) { f.err = J("名前と連絡先を入力してください。","Please enter a name and contact."); return render(); }
+  const id = uid("o");
+  S.orgs.push({id, name:{ja:f.name.trim(), en:f.name.trim()}, type:f.type, status:"pending", contact:f.contact.trim(), bio:{ja:f.bio.trim(), en:f.bio.trim()}});
+  S.actor.org = id; save(); UI.of = null; UI.orgTab = "new";
+  toast(J("登録しました。確認をお待ちください","Signed up. Staff will review your account"));
+  go("organizer");
+}
+
+const ACT = {
+  lang: d => { S.lang = d.l; save(); render(); },
+  scale: d => { S.scale = +d.v; save(); render(); },
+  reset: () => { if (!UI.resetArm){ UI.resetArm = true; render(); setTimeout(() => { UI.resetArm = false; render(); }, 4000); return; }
+    UI.resetArm = false; const lang = S.lang; S = seed(); S.lang = lang; UI.ef = null; UI.reg = null; UI.editing = null; save(); toast(J("デモデータを初期状態に戻しました","Demo data reset")); go("home"); },
+  "go-role": d => {
+    if (d.r === "elder") S.actor.elder = $("#pick-el").value;
+    if (d.r === "family") S.actor.helper = $("#pick-h").value;
+    if (d.r === "organizer"){ S.actor.org = $("#pick-o").value; UI.orgTab = "events"; UI.ef = null; }
+    save(); go(d.r);
+  },
+  "demo-post": () => { S.actor.org = "o2"; UI.orgTab = "new"; UI.ef = blankEF(); ACT["ef-example"](); save(); go("organizer"); },
+  "demo-elder": () => { S.actor.elder = "el1"; save(); go("elder"); },
+  "demo-admin": () => { UI.adminTab = "calls"; go("admin"); },
+  "demo-org": () => { S.actor.org = "o2"; UI.orgTab = "events"; save(); go("organizer"); },
+  "reg-start": (d, el, e) => { e.preventDefault(); UI.reg = newReg(d.mode, d.helper); go("register"); },
+  "reg-set": d => { const r = UI.reg; r[d.f] = d.v === "true" ? true : d.v === "false" ? false : d.v; r.err = ""; render(); },
+  "reg-toggle": d => { const a = UI.reg[d.f]; const i = a.indexOf(d.v); i >= 0 ? a.splice(i,1) : a.push(d.v); UI.reg.err = ""; render(); },
+  "reg-consent": (d, el) => { UI.reg.consent = el.checked; UI.reg.err = ""; },
+  "reg-back": () => { UI.reg.step--; UI.reg.err = ""; UI.stepDir = "back"; render(); window.scrollTo(0,0); },
+  "reg-next": () => { const r = UI.reg; r.err = regValidate(r); if (r.err) return render();
+    if (r.step === regSteps(r).length - 1) return regFinish(r);
+    r.step++; UI.stepDir = "next"; render(); window.scrollTo(0,0); $(".wiz .inp")?.focus({preventScroll:true}); },
+  rsvp: (d, b) => { const el = S.actor.elder;
+    const commit = () => {
+      if (!hasRsvp(el, d.ev)){ const r = {id:uid("r"), elderId:el, eventId:d.ev, via:"app", at:Date.now()}; S.rsvps.push(r); UI.justAdded = r.id; }
+      S.callReqs.forEach(c => { if (c.elderId === el && c.eventId === d.ev) c.status = "done"; });
+      save(); toast(J("申し込みました。「参加予定」に入りました","You're signed up. See “My upcoming events”")); render(); };
+    const card = b.closest(".ecard");
+    if (card && !card.classList.contains("leaving")){ card.classList.add("leaving"); setTimeout(commit, reduce() ? 120 : 240); } else if (!card) commit(); },
+  "call-me": d => { const el = S.actor.elder; if (!openReq(el, d.ev)){ const c = {id:uid("c"), elderId:el, eventId:d.ev, by:"elder", status:"open", at:Date.now()}; S.callReqs.push(c); UI.justReq = c.id; }
+    save(); toast(J("ご都合の良い時間にお電話します","We'll call you at a time that suits you")); render(); },
+  "cancel-rsvp": d => { S.rsvps = S.rsvps.filter(r => r.id !== d.id); save(); toast(J("取り消しました","Cancelled")); render(); },
+  report: d => openModal({kind:"report", eventId:d.ev, reason:null}),
+  "report-pick": d => { UI.modal.reason = d.k; renderModal(); },
+  "report-send": () => { S.reports.push({id:uid("p"), eventId:UI.modal.eventId, reason:UI.modal.reason, status:"open", at:Date.now()}); save(); closeModal(); toast(J("報告を受け付けました。運営が確認します","Report sent. Staff will look into it")); render(); },
+  close: () => closeModal(),
+  scrim: (d, el, e) => { if (e.target === el) closeModal(); },
+  "send-phone": d => { if (!openReq(d.el, d.ev)) S.callReqs.push({id:uid("c"), elderId:d.el, eventId:d.ev, by:"relative", status:"open", at:Date.now()}); save(); toast(J("電話でお伝えするよう、キューに入れました","Added to the call queue")); render(); },
+  "ai-rec": d => aiRecommend(d.id),
+  edit: d => { const el = elder(d.id); UI.editing = {id:el.id, contact:el.contact, stopCalls:el.stopCalls, interests:[...el.interests]}; render(); },
+  "ed-contact": d => { UI.editing.contact = d.v; render(); },
+  "ed-stop": (d, el) => { UI.editing.stopCalls = el.checked; },
+  "ed-int": d => { const a = UI.editing.interests, i = a.indexOf(d.k); i >= 0 ? a.splice(i,1) : a.push(d.k); render(); },
+  "ed-save": () => { const ed = UI.editing, el = elder(ed.id); if (!ed.interests.length) return toast(J("興味を1つ以上選んでください","Choose at least one interest"));
+    el.contact = ed.contact; el.stopCalls = ed.stopCalls; el.interests = ed.interests; delete S.ai[el.id]; UI.editing = null; save(); toast(J("保存しました","Saved")); render(); },
+  "ed-cancel": () => { UI.editing = null; render(); },
+  "org-tab": d => { UI.orgTab = d.t; render(); },
+  "ef-tag": d => { const a = UI.ef.tags, i = a.indexOf(d.k); i >= 0 ? a.splice(i,1) : a.push(d.k); render(); },
+  "ef-access": (d, el) => { const a = UI.ef.access, i = a.indexOf(d.k); el.checked ? (i < 0 && a.push(d.k)) : (i >= 0 && a.splice(i,1)); },
+  "ef-flag": (d, el) => { UI.ef[d.k] = el.checked; },
+  "ef-reset": () => { UI.ef = blankEF(); render(); },
+  "ef-example": () => {
+    const ex = {title:{ja:"組紐づくり 多世代ワークショップ",en:"Kumihimo braiding: a cross-generational workshop"},
+      desc:{ja:"大学生と一緒に、組紐でストラップを作ります。得意な方は学生に教えてください。道具は用意します。",en:"Make a braided-cord strap with university students. If you know the craft, help teach them. Tools provided."},
+      place:{ja:"西陣ふれあいサロン",en:"Nishijin Community Salon"}, audience:{ja:"どなたでも。初めての方歓迎",en:"Anyone; beginners welcome"}};
+    UI.ef = {...blankEF(), ex, title:loc(ex.title), desc:loc(ex.desc), place:loc(ex.place), audience:loc(ex.audience),
+      cat:"crafts", tags:["crafts","young","teaching"], kind:"weekly", dow:3, start:"13:30", end:"15:00", area:"nishijin", access:["stepfree","seating"], cost:300, capacity:16,
+      helping:true, crossGen:true, firstTimer:true}; render(); },
+  "of-type": d => { UI.of.type = d.v; render(); },
+  "admin-tab": d => { UI.adminTab = d.t; render(); },
+  "sim-call": d => { const it = callQueue()[+d.i]; if (it) openModal({kind:"call", item:it}); },
+  speak: () => { const it = UI.modal.item; speak(getScript(it.el.id, it.ev.id).ja); },
+  hush: () => stopSpeak(),
+  "ai-script": async d => { await aiScript(d.el, d.ev); if (UI.modal) renderModal(); },
+  outcome: d => { const it = UI.modal.item; recordOutcome(it, d.o); closeModal(); render(); },
+  "org-approve": d => { org(d.id).status = org(d.id).type === "official" ? "verified" : "approved"; save(); toast(J("承認しました","Approved")); render(); },
+  "org-reject": d => { org(d.id).status = "rejected"; save(); toast(J("却下しました","Rejected")); render(); },
+  "ev-approve": d => { const ev = event(d.id); ev.status = "published"; ev.flags = []; S.ai = {}; save(); toast(J("公開しました","Published")); render(); },
+  "ev-reject": d => { event(d.id).status = "rejected"; save(); toast(J("却下しました","Rejected")); render(); },
+  "rep-dismiss": d => { S.reports.find(p => p.id === d.id).status = "dismissed"; save(); render(); },
+  "rep-unpublish": d => { const p = S.reports.find(p => p.id === d.id); p.status = "actioned"; event(p.eventId).status = "rejected"; save(); toast(J("非公開にしました","Event unpublished")); render(); }
+};
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const fn = ACT[b.dataset.act]; if (!fn) return;
+  if (b.tagName === "INPUT") { fn(b.dataset, b, e); return; }
+  if (b.dataset.act !== "scrim" && b.dataset.act !== "reg-start") e.preventDefault();
+  fn(b.dataset, b, e);
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && UI.modal) closeModal(); });
+
+render();
+(async () => {
+  try { AI = (window.claude && window.claude.use) ? await window.claude.use("sample") : null; } catch(e){ AI = null; }
+  if (AI) render();
+})();
+if ("speechSynthesis" in window) { try { speechSynthesis.getVoices(); } catch(e){} }
+</script>
+
+</body>
+</html>
